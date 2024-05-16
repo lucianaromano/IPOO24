@@ -65,7 +65,7 @@ class Empresa{
     }
 
     //otros metodos
-    public function retornarCadenaDesdeColeccion ($coleccion){
+    private function retornarCadenaDesdeColeccion ($coleccion){
         $cadena = "";
         foreach ($coleccion as $unElementoCol){
             $cadena= $cadena . "." . $unElementoCol . "\n";
@@ -161,6 +161,9 @@ class Empresa{
        }
        return $colVentasCliente;
     }
+
+
+
 }
 
 

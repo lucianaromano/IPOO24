@@ -13,8 +13,8 @@ function mostrarDatosColeccion ($unaColeccion){
 }
 
 // 1. Cree 2 instancias de la clase Cliente: $objCliente1, $objCliente2. 
-$objCliente1= new Cliente("Luciana","Romano","no", "DNI",42604817);
-$objCliente2= new Cliente("Nahuel","Ruiz","si","DNI", 40443386);
+$objCliente1= new Cliente("Luciana","Romano","alta", "DNI","42604817");
+$objCliente2= new Cliente("Nahuel","Ruiz","alta","DNI", "40443386");
 
 //echo $objCliente1; 
 
@@ -56,19 +56,64 @@ if ($resp>0 ) {
     echo "La venta pudo realizarse , el importe TOTAL = " .$resp ."\n";
     echo $objEmpresa1;
 } else {
-    echo "La venta no pudo realizarse correctamente";
+    echo "La venta no pudo realizarse, quizas los codigos o el cliente no se encuentran activos"."\n";
 }
 
 /*6. Invocar al método registrarVenta($colCodigosMotos, $objCliente) de la Clase Empresa donde el
 $objCliente es una referencia a la clase Cliente almacenada en la variable $objCliente2 (creada en el
-punto 1) y la colección de códigos de motos es la siguiente [0]. Visualizar el resultado obtenido.
-7. Invocar al método registrarVenta($colCodigosMotos, $objCliente) de la Clase Empresa donde el
+punto 1) y la colección de códigos de motos es la siguiente [0]. Visualizar el resultado obtenido.*/
+$resp = $objEmpresa1 ->registrarVenta ([0],$objCliente2);
+echo"\n";
+echo "=================================================="."\n";
+echo "====================  PUNTO 6  ==================="."\n";
+echo "=================================================="."\n";
+if ($resp>0 ) {
+    echo "La venta pudo realizarse , el importe TOTAL = " .$resp ."\n";
+    echo $objEmpresa1;
+} else {
+    echo "La venta no pudo realizarse, quizas los codigos o el cliente no se encuentran activos"."\n";
+}
+/**7. Invocar al método registrarVenta($colCodigosMotos, $objCliente) de la Clase Empresa donde el
 $objCliente es una referencia a la clase Cliente almacenada en la variable $objCliente2 (creada en el
 punto 1) y la colección de códigos de motos es la siguiente [2]. Visualizar el resultado obtenido.
-8. Invocar al método retornarVentasXCliente($tipo,$numDoc) donde el tipo y número de documento se
-corresponden con el tipo y número de documento del $objCliente1.
-9. Invocar al método retornarVentasXCliente($tipo,$numDoc) donde el tipo y número de documento se
-corresponden con el tipo y número de documento del $objCliente2
-10. Realizar un echo de la variable Empresa creada en 2. */
+*/
+$resp = $objEmpresa1 ->registrarVenta ([2],$objCliente2);
+echo"\n";
+echo "=================================================="."\n";
+echo "====================  PUNTO 7  ==================="."\n";
+echo "=================================================="."\n";
+if ($resp>0 ) {
+    echo "La venta pudo realizarse , el importe TOTAL = " .$resp ."\n";
+    echo $objEmpresa1;
+} else {
+    echo "La venta no pudo realizarse, quizas los codigos o el cliente no se encuentran activos"."\n";
+}
+/*8. Invocar al método retornarVentasXCliente($tipo,$numDoc) donde el tipo y número de documento se
+corresponden con el tipo y número de documento del $objCliente1.*/
+$colVentas= $objEmpresa1 ->retornarVentasXCliente("DNI","42604817");
+echo"\n";
+echo "=================================================="."\n";
+echo "====================  PUNTO 8  ==================="."\n";
+echo "=================================================="."\n";
+mostrarDatosColeccion($colVentas);
 
+/**9. Invocar al método retornarVentasXCliente($tipo,$numDoc) donde el tipo y número de documento se
+corresponden con el tipo y número de documento del $objCliente2
+*/
+$colVentas = $objEmpresa1 ->retornarVentasXCliente("DNI", "40443386");
+echo"\n";
+echo "=================================================="."\n";
+echo "====================  PUNTO 9  ==================="."\n";
+echo "=================================================="."\n";
+
+mostrarDatosColeccion($colVentas);
+//10. Realizar un echo de la variable Empresa creada en 2. */
+
+echo"\n";
+echo "=================================================="."\n";
+echo "====================  PUNTO 10  ==================="."\n";
+echo "=================================================="."\n";
+
+echo $objEmpresa1;
+echo "\n";
 ?>
