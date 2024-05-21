@@ -21,7 +21,7 @@ class Moto{
         $this->anioFabricacion=$anioFabricacion;
         $this->descripcion=$descripcion;
         $this->porcentaje=$porcentaje;
-        $this->activo=activo;   
+        $this->activo=$activo;   
     }
 
     //OBSERVADORES

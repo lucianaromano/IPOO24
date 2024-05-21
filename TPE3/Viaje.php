@@ -148,7 +148,7 @@ class Viaje {
     /**implementar el método venderPasaje($objPasajero) que debe incorporar el pasajero a la colección de pasajeros 
     *(solo si hay espacio disponible), actualizar los costos abonados y retornar el costo final que deberá ser abonado 
     *por el pasajero */
-    public function venderPasaje($objPasajero){
+    /**public function venderPasaje($objPasajero){
         $colPasajeros = $this->getColObjPasajeros();
 
         if($this->hayPasajesDisponible()){
@@ -158,7 +158,46 @@ class Viaje {
             $importe = $this->getImporte();
         }
         return $importe;
+    }*/
+    
+    /**VERIFICACIÓN DE NO REDUNDANCIA DE PASAJEROS. RETORNA FALSE SI EL DNI INGRESADO POR EL USUARIO NO ESTA INCLUIDO EN LA COLECCION DE OBJETOS PASAJERO
+     * @param INT $numDni
+     * @return BOOLEAN
+     */
+    public function verificarPasajero($numDni){
+        $posicionObjPasajero=0;
+        $objPasajeroEncontrado=false;
+        $colPasajeCopia=$this->getColObjPasajeros();
+        while (!$objPasajeroEncontrado && $posicionObjPasajero<count($colPasajeCopia)) {
+            if ($colPasajeCopia[$posicionObjPasajero]->getNroDni()==$numDni) {
+                $objPasajeroEncontrado=true;
+            }
+            $posicionObjPasajero++;
+        }
+        return $objPasajeroEncontrado;
     }
+
+    public function venderPasaje($objPasajero){
+        $colPasajeCopia=$this->getColObjPasajeros();
+        $costoPasajero=-1;
+        //Busqueda de espacio en el viaje
+        $hayEspacio=$this->hayPasajesDisponible();
+        //Verificacion de redundancia en la lista de pasajeros
+        $pasajeroCargado=$this->verificarPasajero($objPasajero->getNroDni());
+        //Carga del pasajero y del monto abonado
+        if ($hayEspacio && !$pasajeroCargado) {
+            array_push($colPasajeCopia, $objPasajero);
+            $this->setColObjPasajeros($colPasajeCopia);
+            $costoViaje=$this->getCostoViaje();
+            $sumaCostos=$this->getSumaCostos();
+            $incrementoPasajero=$objPasajero->darPorcentajeIncremento();
+            $costoPasajero=$costoViaje+($costoViaje*$incrementoPasajero/100);
+            $sumaCostos  += $costoPasajero;
+            $this->setSumaCostos($sumaCostos);
+        }
+        return $costoPasajero;
+    }
+
 
     /**Implemente la función hayPasajesDisponible() que retorna verdadero si la cantidad de pasajeros del viaje 
      *es menor a la cantidad máxima de pasajeros y falso caso contrario */

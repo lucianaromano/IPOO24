@@ -60,6 +60,7 @@ do {
             $viaje->setCantMaxPasajeros($nuevaCantMax);
             echo $viaje."\n";
             break;
+            
         case 3: //datos del pasajero
             $cadena = $viaje->mostrarDatosPasajeros(); //muestro datos precargados de pasajeros
             echo $cadena."\n";
@@ -79,6 +80,7 @@ do {
             $cadena=$viaje-> mostrarDatosPasajeros();
             echo $cadena ."\n";
             break;
+
         case 4:
             echo "Los anteriores datos del responbale son: \n";
             echo $viaje->getObjResponsableV()."\n\n";
@@ -94,6 +96,7 @@ do {
             echo "Los nuevos datos del responbale son: \n";
             echo $viaje->getObjResponsableV();
             break;
+
         case 5: 
             //creo el nuevo pasajero
             echo "Ingrese el nombre del pasajero\n";
@@ -111,7 +114,7 @@ do {
             $pasajero = new Pasajero($nombre,$apellido,$doc,$telefono,$numAsiento,$ticket);
 
 
-            
+
         case 6: //salir 
             echo "Saliendo del programa... \n";
             sleep(3); //a los 3seg sale del programa.
