@@ -178,24 +178,16 @@ class Viaje {
     }
 
     public function venderPasaje($objPasajero){
-        $colPasajeCopia=$this->getColObjPasajeros();
-        $costoPasajero=-1;
-        //Busqueda de espacio en el viaje
-        $hayEspacio=$this->hayPasajesDisponible();
-        //Verificacion de redundancia en la lista de pasajeros
-        $pasajeroCargado=$this->verificarPasajero($objPasajero->getNroDni());
-        //Carga del pasajero y del monto abonado
-        if ($hayEspacio && !$pasajeroCargado) {
-            array_push($colPasajeCopia, $objPasajero);
-            $this->setColObjPasajeros($colPasajeCopia);
-            $costoViaje=$this->getCostoViaje();
-            $sumaCostos=$this->getSumaCostos();
-            $incrementoPasajero=$objPasajero->darPorcentajeIncremento();
-            $costoPasajero=$costoViaje+($costoViaje*$incrementoPasajero/100);
-            $sumaCostos  += $costoPasajero;
-            $this->setSumaCostos($sumaCostos);
-        }
-        return $costoPasajero;
+      $arregloPasajeros = $this->getColObjPasajeros();
+      $costo= false;
+
+      if($this->hayPasajesDisponible()){
+        $i=count($arregloPasajeros);
+        $arregloPasajeros[$i]= $objPasajero;
+        $this->setColObjPasajeros($arregloPasajeros);
+        $costo = $this-> getCostoViaje();
+      }
+      return $costo;
     }
 
 

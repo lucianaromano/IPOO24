@@ -49,12 +49,13 @@ class PasajeroEspecial extends Pasajero {
     /**Si el pasajero tiene necesidades especiales y requiere 
      *silla de ruedas, asistencia y comida especial entonces el pasaje tiene un incremento del 30% */
     public function darPorcentajeIncremento(){
-        $incremento = parent :: darPorcentajeIncremento();
         $sillaRuedas = $this->getSillaRuedas();
         $asistencia = $this->getAsistencia();
         $comidas = $this->getComidas();
         if ($sillaRuedas != null && $asistencia != null && $comidas != null) {
             $incremento = 30;
+        }else{
+            $incremento = 10;
         }
         return $incremento;
     
