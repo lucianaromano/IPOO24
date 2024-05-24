@@ -58,8 +58,8 @@ echo "\n-----------------------------------------------\n";
 echo "\n----------------EJERCICIO 3.a------------------\n";
 echo "\n-----------------------------------------------\n";
 
-$resp = $objTorneo1 ->ingresarPartido($objE5, $objE11, '2024-05-23', 'futbol');
-echo "-----Partido ingresado-----". mostrarDatosColeccion($resp) ."\n";
+ $objTorneo1 ->ingresarPartido($objE5, $objE11, '2024-05-23', 'futbol') ? "Se incorporo el partido." : 'No se incorporo el partido.';
+
 //echo "Cantidad de partidos en el torneo: ". cantidadPartidos($resp) ."\n";
 
 /**ingresarPartido($objE11, $objE11, '2024-05-23', 'basquetbol') ; visualizar la respuesta y la cantidad de equipos del torneo.

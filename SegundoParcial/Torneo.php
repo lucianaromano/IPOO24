@@ -33,7 +33,7 @@ class Torneo {
     }
 
     function mostrarDatosColeccion ($unaColeccion){
-        echo "-------------- INMUEBLE DISPONIBLES --------------". "\n";
+        echo "----------------------------". "\n";
         foreach ($unaColeccion as $unElemento){
             echo $unElemento . "\n";
         }
