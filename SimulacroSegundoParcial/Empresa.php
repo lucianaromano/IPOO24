@@ -193,7 +193,21 @@ class Empresa{
         return $ventasImportadas;
     }
 
+  /* otra forma  
+    $colVentas = $this->getColVentas();
+    $ventasImportadas= [];
 
+    foreach ($colVentas as $unaVenta) {
+        //recorro la coleccion de ventas 
+        $colMotosImportadas = $unaVenta -> retornarMotosImportadas(); //por cada venta llamo al metodo para que
+        //me de las motos importadas, podria devolverme una coleccion vacia, entonces compruebo q no este vacia 
+        //y si es asi armo la coleccion de ventas que tiene al menos 1 moto importada
+        if (empty($colMotosImportadas) == false) {
+            array_push ($ventasImportadas, $unaVenta);
+        }
+    return $ventasImportadas;
+    }
+*/
 }
 
 

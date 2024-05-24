@@ -41,9 +41,9 @@ class Edificio{
     //METODO TOSTRING
     public function __toString(){
         //string $cadena
-        //$num = count($this->getColInmuebles());
+        
         $cadena = "-Direccion del edificio: ". $this->getDireccion()."\n";
-        $cadena = $cadena. "-Cantidad de inmuebles: " . count($this->getColInmuebles())."\n";
+        $cadena = $cadena. "-Cantidad de inmuebles: " . $this->cantidadInmuebles()."\n";
         $cadena = $cadena. "-Administrador del edificio: \n".$this->getObjPersona()."\n";
        
 
@@ -95,6 +95,16 @@ class Edificio{
             }
     }
     }
+
+    public function cantidadInmuebles(){
+        $colInmueble = $this->getColInmuebles();
+        $cantidad = 0;
+        for($i = 0; $i < count($colInmueble);$i++){
+         $cantidad = $cantidad + 1 ;
+        }
+        return $cantidad;
+        }
+        
    
     /**
      * Implementar el método registrarAlquilerInmueble que recibe por parámetro el tipo de uso que se requiere 
@@ -171,7 +181,7 @@ class Edificio{
         }
         if($pisoMinimo!=99999){
             $inmuebleReg->setObjInquilino ($objPersona);
-            $this->setColInmuebles($indice, $$inmuebleReg);
+            $this->setColInmuebles($indice, $inmuebleReg);
         }    
         return $respuesta;
     }
@@ -223,7 +233,8 @@ class Edificio{
 
      public function calculaCostoEdificio(){
         $costo = 0;
-        foreach($this->getColInmuebles() as $unInm){
+        $colInmuebles = $this-> getColInmuebles();
+        foreach($colInmuebles as $unInm){
             if ($unInm->getObjInquilino() != null){
                 $costo += $unInm->getCostoMensual();
             }

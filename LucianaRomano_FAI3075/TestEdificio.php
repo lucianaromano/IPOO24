@@ -23,7 +23,7 @@ include_once ('Persona.php');
     //3. Implementar que el objeto Edificio que tiene los departmentos y los inquilinos creados en (1) y (2).    
     $colInmuebles = [$objInmueble1, $objInmueble2, $objInmueble3, $objInmueble4 , $objInmueble5];
     //$objEdificio1->setColInmuebles($colInmuebles);
-    $objEdificio1 = new Edificio ("Juan B. Justo 3456", $colInmuebles, $objAdministrador);
+    $objEdificio1 = new Edificio ("Juan B. Justo 3456", $colInmuebles, $objAdministrador1);
 
     //4.Invocar al método darInmueblesDisponiblesParaAlquiler con parámetros Tipo Uso igual a “departamento” 
     //y monto Máximo igual a 550000.  Visualizar el resultado.
@@ -35,8 +35,6 @@ include_once ('Persona.php');
         }
     }
     $colInmuebles = $objEdificio1 -> darInmueblesDisponibles("departamento", 550000) ;
-    
-
     mostrarDatosColeccion ($colInmuebles);
 
     /**

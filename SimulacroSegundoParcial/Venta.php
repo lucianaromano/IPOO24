@@ -130,12 +130,11 @@ class Venta{
     public function retornarTotalVentaNacional(){
         $totalNacional = 0;
         $colMotos = $this->getColMotos() ;
-        $cantidadMotos = count ($colMotos);
-        for($i=0;$i<$cantidadMotos;$i++){
-            $unaMoto = $colMotos[$i];
-            if($unaMoto instanceof MotoNacional){
-                $precioVenta = $unaMoto->darPrecioVenta();
-                $totalNacional = $totalNacional + $precioVenta;
+        foreach($colMotos as $unaMoto){
+            if ($unaMoto instanceof MotoNacional){
+                if ($unaMoto -> darPrecioVenta() != 1 ){
+                    $totalNacional += $unaMoto ->darPrecioVenta();
+                }
             }
         }     
         return $totalNacional;  
