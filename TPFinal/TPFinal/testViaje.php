@@ -97,7 +97,7 @@ function menuViaje(){
 					}
 					 
 				
-				echo "\nIngrese nro responsable: ";
+				echo "\nIngrese nel numero de responsable: ";
 				$nror = trim(fgets(STDIN));
 				$objRespo->buscar($nror);
 			
