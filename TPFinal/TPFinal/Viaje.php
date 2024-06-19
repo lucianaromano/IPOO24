@@ -20,7 +20,7 @@ class Viaje {
         $this-> idViaje = '';
         $this-> vdestino='';
         $this-> vcantMaxPasajeros= '';
-        $this-> vcolPasajeros='';
+        $this-> vcolPasajeros=[];
         $this-> rnumeroEmpleado= '';
         $this-> vimporte = '';
         $this-> mensajeOperacion = '';
@@ -96,7 +96,7 @@ class Viaje {
         //Array Funcion $arreglo
         //String $retorno
         $retorno = "";
-        $arreglo = $this->getColObjPasajeros();
+        $arreglo = $this->getVcolPasajeros();
         foreach ($arreglo as $i) {
             $retorno .= $i . "\n";
             $retorno .= "----------------------------------------------------------------------\n";
@@ -135,10 +135,10 @@ class Viaje {
                 if ($row2 = $base->Registro()) {
                     $this->setIdViaje($row2['idViaje']);
                     $this->setvDestino($row2['vvdestino']);
-                    $this->setCantMaxPasajeros($row2['vcantmaxpasajeros']);
+                    $this->setvcantMaxPasajeros($row2['vcantmaxpasajeros']);
                     $pasajero = new Pasajero();
                     $pasajero->buscar($row2['pdocumento']);
-                    $this->setColObjPasajeros($pasajero);
+                    $this->setvcolPasajeros($pasajero);
                     $responsable = new Responsable();
                     $responsable->buscar($row2['rnumeroempleado']);
                     $this->setRnumeroempleado($responsable);
@@ -172,9 +172,18 @@ class Viaje {
 			if($base->Ejecutar($consultaViajes)){				
 				$arrayViaje = array();
 				while($row2 = $base->Registro()){
-					$objViaje = new viaje();
-					$objViaje->Buscar($row2['idviaje']);
-					array_push($arrayViaje,$objViaje);
+                    $objEmpresa = new Empresa ();
+                    $objEmpresa ->Buscar ($row2['idempresa']);
+                    $objResponsable = new Responsable();
+                    $objResponsable -> Buscar ($row2['rnumeroempleado']);
+                    $idviaje = $row2['idviaje'];
+                    $vdestino= $row2['vdestino'];
+                    $vcantMaxPasajeros = $row2['vcantMaxPasajeros'];
+                    $vimporte = $row2 ['vimporte'];
+
+                    $viaje = new Viaje ();
+                    $viaje -> cargar ($idviaje,$vdestino,$vcantMaxPasajeros,$objResponsable,$vimporte,$objEmpresa);
+					array_push($arrayViaje,$viaje);
                 }				
             }else{
 		 		$this->setMensajeOperacion($base->getError()); 		

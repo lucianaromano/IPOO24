@@ -10,40 +10,260 @@ include_once 'Responsable.php';
 include_once 'Empresa.php';
 include_once 'BaseDatos.php';
 
+
+$base = new BaseDatos();
+
 /**********************************MENU GENERAL*****************************************/
-function menuGeneral(){
+do {
 
-	do{	
-		echo "\n MENU GENERAL \n";
-		echo "(1)VIAJES\n"; 
-		echo "(2)PASAJEROS \n";
-		echo "(3)RESPONSABLE VIAJE \n";
-		echo "(4)EMPRESA \n";
+    echo "---------------------------OPCIONES GENERALES----------------------------
+        1) Acceder a tabla Empresas.
+        2) Acceder a tabla Viajes.
+        3) Acceder a tabla Pasajeros.
+        4) Acceder a tabla Responsables.
+        0) Salir.
+        Opcion: ";
+    $opcion = trim(fgets(STDIN));
+    switch ($opcion) {
+        case 1:
+            menuEmpresa();
+            break;
+        case 2:
+            menuViaje();
+            break;
+        case 3:
+            menuPasajero();
+            break;
+        case 4:
+            menuResponsable();
+            break;
+        case 0:
+            break;
+        default:
+            echo "Valor ingresado incorrecto.\n";
+    }
+} while ($opcion != 0);
+
+/**********************************MENU VIAJE************************************************************/
+
+function menuViaje(){
+	
+	do {
+		echo "\nMENU VIAJE: \n";  
+		echo "(1)Ingresar viaje\n";
+		echo "(2)Modificar datos viaje\n";
+		echo "(3)Eliminar viaje\n";
+		echo "(4)Listar viajes\n ";
 		echo "(x)salir\n ";
-		echo "Ingrese una opcion: \n";
+		echo "INGRESE UNA OPCION: ";
 		$opcion= trim(fgets(STDIN));
+	
+			if ($opcion == 1) {
+				$rta = false;
 
-		if ($opcion == 1) {
-			echo menuViaje();
-		}
-		else if ($opcion == 2) {
-			echo  menuPasajero();
-		}	
-		else if ($opcion == 3) {
-			echo menuResponsable();
-		}
-		else if ($opcion == 4) {
-			echo menuEmpresa();
-		}		
-		else {
-			echo "Saliendo del programa";
-		}	
+				echo "Ingrese id: ";
+				$idViaje = trim(fgets(STDIN));	
+				echo "Ingrese destino: ";
+				$vdestino = trim(fgets(STDIN));	
+				echo "Ingrese max pasajeros: ";
+				$maxpasa = trim(fgets(STDIN));	
+				echo "Ingrese importe: ";
+				$importe = trim(fgets(STDIN));
+				
+				//da las coleccion de empresas y busca el id para verificar que exista  y despues lo setea a la funcion cargar
+				$objEmpresa = new empresa();
+				$colEmpresas = $objEmpresa->listar("");	
 
-	}while ($opcion <= 4);	
+					foreach ($colEmpresas as $empresas){
+						
+						echo "-------------------------------------------------------";
+						echo $empresas;
+						echo "-------------------------------------------------------";
+					}
+					 
+				echo "\nIngrese id empresa: ";
+				$idempresa = trim(fgets(STDIN));
+				$objEmpresa->Buscar($idempresa);
 
+				//da las coleccion de responsables y busca el numero para verificar que exista  y despues lo setea a la funcion cargar
+				$objRespo = new responsable();
+				$colResponsable = $objRespo->listar();	
+
+					foreach ($colResponsable as $responsable){
+						
+						echo "-------------------------------------------------------";
+						echo $responsable;
+						echo "-------------------------------------------------------";
+					}
+					 
+				
+				echo "\nIngrese nro responsable: ";
+				$nror = trim(fgets(STDIN));
+				$objRespo->buscar($nror);
+			
+
+				$objViaje = new viaje(); 
+				$colViajes = $objViaje ->listar("");
+
+				foreach ($colViajes as $viaje) {
+					if($viaje->getVDestino() == $vdestino){
+						echo "No se puede agregar dos viajes con el mismo destino ";
+						$value = false;
+					}
+					else{
+						$value = true;
+					}
+				} if ($value) {	
+					$objViaje->cargar($idViaje,$vdestino,$maxpasa,$objRespo,$importe,$objEmpresa);
+					$rta = $objViaje->insertar();		
+				}
+				
+				if ($rta == true) {
+					echo "\nSE INSERTO EL VIAJE EN LA BD\n";
+					$colViajes = $objViaje->listar();
+					foreach ($colViajes as $viaje){
+										
+						echo "-------------------------------------------------------";
+						echo $viaje;
+						echo "-------------------------------------------------------";
+					}
+				}
+				
+			}
+			else if($opcion == 2){
+				$objviaje= new viaje();
+				$rta = false;
+
+				echo "\nIngrese el id del viaje que desea modificar: ";
+				$num = trim(fgets(STDIN));
+
+						if ($objviaje->Buscar($num) == true) {
+							
+							echo "Ingrese nuevo destino: ";
+							$des = trim(fgets(STDIN));
+							echo "Ingrese cant max pasajero: ";
+							$max = trim(fgets(STDIN));
+							echo "Ingrese nuevo importe : ";
+							$importe = trim(fgets(STDIN));
+
+							//da las coleccion de empresas y busca el id para verificar que exista  y despues lo setea a la funcion cargar
+							$objEmpresa = new empresa();
+							$colEmpresas = $objEmpresa->listar();	
+
+								foreach ($colEmpresas as $empresas){
+									
+									echo "-------------------------------------------------------";
+									echo $empresas;
+									echo "-------------------------------------------------------";
+								}
+								
+							echo "\nIngrese id de la nueva empresa: ";
+							$idempresa = trim(fgets(STDIN));
+							$objEmpresa->Buscar($idempresa);
+
+							//da las coleccion de responsables y busca el numero para verificar que exista  y despues lo setea a la funcion cargar
+							$objRespo = new responsable();
+							$colResponsable = $objRespo->listar();	
+
+								foreach ($colResponsable as $responsable){
+									
+									echo "-------------------------------------------------------";
+									echo $responsable;
+									echo "-------------------------------------------------------";
+								}
+								
+							
+							echo "\nIngrese nuevo nro responsable: ";
+							$nror = trim(fgets(STDIN));
+							$objRespo->Buscar($nror);
+			
+							$objviaje->setVDestino($des);
+							$objviaje->setVcantMaxPasajeros($max);
+							$objviaje->setRnumeroempleado($objRespo);
+							$objviaje->setVimporte($importe);
+							$objviaje->setIdEmpresa($objEmpresa);
+						
+							$rta = $objviaje->modificar();	
+						
+						}
+						else{
+							echo "\n -- No se encontro  un viaje con ese id \n";
+						}
+					
+								   
+				if($rta == true){
+					echo "\n SE MODIFICO EL VIAJE \n";
+					$colViajes = $objviaje->listar("");
+					foreach ($colViajes as $viaje){
+						
+						echo "-------------------------------------------------------";
+						echo $viaje;
+						echo "-------------------------------------------------------";
+					}	
+				}
+				else{
+					echo $objviaje->getMensajeOperacion();
+				   }
+				
+			}
+			else if($opcion == 3){
+				
+				$objviaje = new viaje();
+				$rta = false;
+
+				echo "Ingrese id del viaje que desea eliminar : ";
+				$id = trim(fgets(STDIN));
+				 
+
+				if ($objviaje ->Buscar($id)){
+				
+					$objPasaj = new pasajero();
+					$colPasajeros = $objPasaj->listar("idviaje=".$objviaje->getIdViaje());
+
+					if ( count($colPasajeros) > 0 ) {
+						echo "\n -- No se puede eliminar este viaje por que tiene pasajeros \n";
+						
+					}	
+					else{
+						$rta = $objviaje->eliminar();
+					}								
+					
+				}
+				else{
+					echo "\n--No se encontro un viaje con ese id \n";
+				}
+				
+				
+				if ($rta == true) {
+					echo " \n SE ELIMINO EL VIAJE DE LA BD \n";
+
+					$colViaje = $objviaje->listar();	
+					foreach ($colViaje as $viaje){
+						
+						echo "-------------------------------------------------------";
+						echo $viaje;
+						echo "-------------------------------------------------------";
+					}
+			   }
+			   else{
+				echo $objviaje->getMensajeOperacion();
+			   }
+			}
+			else if($opcion == 4){
+				
+				$objViaje = new Viaje();
+				$colViajes = $objViaje->listar();	
+
+					foreach ($colViajes as $viaje){
+						
+						echo "-------------------------------------------------------";
+						echo $viaje;
+						echo "-------------------------------------------------------";
+					}
+			}
+
+	}while ($opcion <= 3); 
 }
-
-
 
 /***************************MENU PASAJERO*****************************/
 function menuPasajero(){
@@ -289,7 +509,7 @@ function menuResponsable(){
 				if ($rta == true) {
 					echo " \n SE ELIMINO EL RESPONSABLE DE LA BD \n";
 
-					$colResponsable = $objRespo->listar("");	
+					$colResponsable = $objRespo->listar();	
 					foreach ($colResponsable as $resp){
 						
 						echo "-------------------------------------------------------";
@@ -447,4 +667,15 @@ function menuEmpresa(){
 	
 }
 
-echo menuGeneral();
+/**
+ * Funcion que recibe un array y la muestra por pantalla.
+ * @param Array $array
+ */
+function listarArray($array)
+{
+    $texto = "\n-------------------\n";
+    foreach ($array as $item) {
+        $texto = $texto . $item->__toString() . "\n";
+    }
+    echo $texto;
+}
