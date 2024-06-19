@@ -6,7 +6,7 @@ y eliminar la información de un viaje, teniendo en cuenta las particularidades 
 en el dominio a lo largo del cuatrimestre.*/
 include_once 'Viaje.php';
 include_once 'Pasajero.php';
-include_once 'ResponsableV.php';
+include_once 'Responsable.php';
 include_once 'Empresa.php';
 include_once 'BaseDatos.php';
 
@@ -41,6 +41,147 @@ function menuGeneral(){
 
 	}while ($opcion <= 4);	
 
+}
+
+
+
+/***************************MENU PASAJERO*****************************/
+function menuPasajero(){
+	
+	do {
+		echo "\nMENU PASAJERO: \n";  
+		echo "(1)Ingresar pasajero\n";
+		echo "(2)Modificar datos pasajero\n";
+		echo "(3)Eliminar pasajero\n";
+		echo "(4)Listar pasajero\n";
+		echo "(x)salir\n ";
+		echo "INGRESE UNA OPCION: ";
+		$opcion= trim(fgets(STDIN));
+	
+			if ($opcion == 1) {
+				$rta = false;
+
+				echo "Ingrese dni pasajero: ";
+				$dni = trim(fgets(STDIN));	
+				echo "Ingrese nombre del pasajero: ";
+				$nom = trim(fgets(STDIN));	
+				echo "Ingrese el apellido del pasajero: ";
+				$ape = trim(fgets(STDIN));	
+				echo "Ingrese el telefono del pasajero: ";
+				$tele = trim(fgets(STDIN));
+				echo "Ingrese id del viaje: ";
+				$idviaje = trim(fgets(STDIN));
+								
+				$newPasaj = new pasajero();
+				$objviaje = new viaje();
+				$objviaje->buscar($idviaje);
+
+				$newPasaj->cargar($dni,$nom,$ape,$tele,$objviaje);
+				$rta = $newPasaj->insertar();	
+				
+				if ($rta == true) {
+				
+					echo "\n EL PASAJERO FUE INGRESADA A LA BD \n";					
+					$colPasajeros = $newPasaj->listar("");
+
+					foreach ($colPasajeros as $pasajero){
+						echo "-------------------------------------------------------";
+						echo  $pasajero;
+						echo "-------------------------------------------------------";
+					} 
+				}
+				else{
+					echo $newPasaj->getMensajeOperacion();
+				}
+				
+	
+			}
+			else if($opcion == 2){
+				$objPasaj= new pasajero();
+				$rta = false;
+
+				echo "\nIngrese el dni del pasajero que desea modificar: ";
+				$num = trim(fgets(STDIN));
+
+						if ($objPasaj->buscar($num) == true) {
+							echo "Ingrese nuevo nombre: ";
+							$nom = trim(fgets(STDIN));
+							echo "Ingrese nuevo apellido: ";
+							$ape = trim(fgets(STDIN));
+							echo "Ingrese nuevo telefono: ";
+							$tele= trim(fgets(STDIN));
+							
+							$objPasaj->setPnombre($nom);
+							$objPasaj->setPapellido($ape);
+							$objPasaj->setPtelefono($tele);
+							
+							$rta = $objPasaj->modificar();	
+						}
+						else{
+							echo "\n -- No se encontro  un pasajero con ese dni \n";
+						}
+								   
+				if($rta == true){
+					echo "\n SE MODIFICO AL PASAJERO \n";
+					$colPasajeros = $objPasaj->listar("");
+					foreach ($colPasajeros  as $pasajero){
+						
+						echo "-------------------------------------------------------";
+						echo $pasajero;
+						echo "-------------------------------------------------------";
+					}	
+				}
+				else{
+					echo $objPasaj->getMensajeOperacion();
+				   }
+				
+			}
+			else if($opcion == 3){
+				
+				$objPasaj = new pasajero();
+				$rta = false;
+
+				echo "Ingrese dni del pasajero que desea eliminar : ";
+				$dni = trim(fgets(STDIN));
+					
+					if ($objPasaj->buscar($dni) == true) {
+						$rta = $objPasaj->eliminar();
+					}
+					else{
+						echo "\n -- No se encontro pasajero con ese dni \n";
+					}
+				
+				
+				if ($rta == true) {
+					echo " \n SE ELIMINO EL PASAJERO DE LA BD \n";
+
+					$colPasa = $objPasaj->listar("");	
+					foreach ($colPasa as $pasajero){
+						
+						echo "-------------------------------------------------------";
+						echo $pasajero;
+						echo "-------------------------------------------------------";
+					}
+			   }
+			   else{
+				echo $objPasaj->getMensajeOperacion();
+			   }
+			}
+			else if($opcion == 4){
+				
+				$objPasajero = new pasajero();
+				$colPasajeros = $objPasajero->listar("");	
+
+					foreach ($colPasajeros as $pasajero){
+						
+						echo "-------------------------------------------------------";
+						echo $pasajero;
+						echo "-------------------------------------------------------";
+					}
+			
+			}
+
+	}while ($opcion <= 4); 
 }
 
 /***************************MENU RESPONSABLE*****************************/
@@ -305,3 +446,5 @@ function menuEmpresa(){
 	} while ($opcion <= 4);
 	
 }
+
+echo menuGeneral();
