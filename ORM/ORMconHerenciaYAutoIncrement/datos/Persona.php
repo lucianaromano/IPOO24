@@ -1,7 +1,6 @@
 <?php
 include_once "BaseDatos.php";
-class Persona
-{
+class Persona{
 
     private $idpersona;
     private $nrodoc;

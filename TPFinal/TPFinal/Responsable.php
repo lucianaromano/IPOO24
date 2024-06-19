@@ -94,7 +94,7 @@ class Responsable{
         return $rta;
     }
 
-    public static function listar($condicion = ''){
+    public function listar($condicion = ''){
         $arregloResponsable = null;
         $base = new BaseDatos();
         $consulta = "SELECT * FROM responsable";
@@ -114,10 +114,10 @@ class Responsable{
                     array_push ($arregloResponsable,$responsable);
                 }
             }else{
-                Responsable::setMensajeoperacion($base->getError());
+                $this->setMensajeoperacion($base->getError());
             }
         }else{
-            Responsable::setMensajeoperacion($base->getError());
+            $this->setMensajeoperacion($base->getError());
         }
         return $arregloResponsable;
     }

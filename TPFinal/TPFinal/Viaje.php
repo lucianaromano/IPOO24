@@ -172,10 +172,10 @@ class Viaje {
 			if($base->Ejecutar($consultaViajes)){				
 				$arrayViaje = array();
 				while($row2 = $base->Registro()){
-					$viaje = new viaje();
-					$viaje->Buscar($row2['idviaje']);
-					array_push($arrayViaje,$viaje);
-				}				
+					$objViaje = new viaje();
+					$objViaje->Buscar($row2['idviaje']);
+					array_push($arrayViaje,$objViaje);
+                }				
             }else{
 		 		$this->setMensajeOperacion($base->getError()); 		
 			}
@@ -188,15 +188,13 @@ class Viaje {
     public function insertar(){
         $base = new BaseDatos();
         $rta = false;
-        $empresa = $this->getIdempresa();
-        $idEmpresa = $empresa->getIdEmpresa();
-        $responsable = $this->getRnumeroempleado();
-        $numResponsable = $responsable->getrnumeroEmpleado();
-        $consulta = "INSERT INTO viaje(vdestino, vcantmaxpasajeros,colObjPasajeros, idempresa, rnumeroempleado, vimporte, " .
-        "tipoAsiento, idayvuelta) VALUES ('{$this->getVdestino()}', {$this->getVcantmaxpasajeros()}, 
-        {$idEmpresa}, {$numResponsable}, {$this->getVimporte()})";
+
+        $consultaInsertar = "INSERT INTO viaje(vdestino,vcantMaxPasajeros,rnumeroEmpleado,vimporte,idEmpresa)
+                            VALUES (" .$this->getVdestino() ."," .$this->getVcantMaxPasajeros().",". $this->getRnumeroempleado()."," .$this->getVimporte().",".$this->getIdEmpresa()."')";
+        
         if ($base->Iniciar()) {
-            if ($base->Ejecutar($consulta)) {
+            if ($id = $base->devuelveIDInsercion($consultaInsertar)) {
+                $this->setIdViaje($id);
                 $rta = true;
             } else {
                 $this->setMensajeOperacion($base->getError());
@@ -211,13 +209,10 @@ class Viaje {
     {
         $rta = false;
         $base = new BaseDatos();
-        $empresa = $this->get();
-        $idEmpresa = $empresa->getIdempresa();
-        $responsable = $this->getRnumeroempleado();
-        $numResponsable = $responsable->getRnumeroempleado();
-        $consulta = "UPDATE viaje SET vdestino = '{$this->getVdestino()}', vcantmaxpasajeros = {$this->getVcantmaxpasajeros()}, idempresa = {$idEmpresa}, rnumeroempleado = {$numResponsable}, vimporte = {$this->getVimporte()}, tipoAsiento = '{$this->getTipoasiento()}', idayvuelta = '{$this->getIdayvuelta()}' WHERE idviaje = {$this->getIdviaje()}";
+        $consultaModificar = "UPDATE viaje SET vdestino='" . $this->getVdestino() . "',vcantMaxPasajeros='" . $this->getVcantMaxPasajeros() . "'
+                           ,rnumeroempleado='" . $this->getRnumeroempleado() . "',importe=" . $this->getVimporte() . " WHERE id" . $this->getIdViaje();
         if ($base->Iniciar()) {
-            if ($base->Ejecutar($consulta)) {
+            if ($base->Ejecutar($consultaModificar)) {
                 $rta = true;
             } else {
                 $this->setMensajeoperacion($base->getError());
@@ -228,13 +223,12 @@ class Viaje {
         return $rta;
     }
 
-    public function eliminar()
-    {
+    public function eliminar(){
         $base = new BaseDatos();
         $rta = false;
-        $consulta = "DELETE FROM viaje WHERE idviaje = " . $this->getIdviaje();
+        $consultaElimina = "DELETE FROM viaje WHERE idviaje = " . $this->getIdviaje();
         if ($base->Iniciar()) {
-            if ($base->Ejecutar($consulta)) {
+            if ($base->Ejecutar($consultaElimina)) {
                 $rta = true;
             } else {
                 $this->setMensajeoperacion($base->getError());

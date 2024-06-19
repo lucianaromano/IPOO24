@@ -79,7 +79,9 @@ class Empresa{
         return $rta;
     }
 
-    public static function listar($condicion = ""){
+    //static funcion
+    //$empresa::setMensajeoperacion 
+    public function listar($condicion = ""){
         $array = null;
         $base = new BaseDatos();
         $consulta = "Select * from empresa ";
@@ -99,10 +101,10 @@ class Empresa{
                     array_push($array, $empresa);
                 }
             }else{
-                Empresa::setMensajeoperacion($base->getError());
+                $this->setMensajeoperacion($base->getError());
             }
         }else{
-            Empresa::setMensajeoperacion($base->getError());
+            $this->setMensajeoperacion($base->getError());
         }
         return $array;
     }

@@ -114,7 +114,7 @@ class Pasajero {
 	 * @param void
      * @return array 
 	 */
-    public static function listar($condicion = ''){
+    public function listar($condicion = ''){
         $arregloPasajero = null;
         $base = new BaseDatos();
         $consulta = "SELECT * FROM pasajero";
@@ -136,10 +136,10 @@ class Pasajero {
                     array_push ($arregloPasajero,$pasajero);
                 }
             }else{
-                Pasajero::setMensajeoperacion($base->getError());
+                $this->setMensajeoperacion($base->getError());
             }
         }else{
-            Pasajero::setMensajeoperacion($base->getError());
+            $this->setMensajeoperacion($base->getError());
         }
         return $arregloPasajero;
     }
