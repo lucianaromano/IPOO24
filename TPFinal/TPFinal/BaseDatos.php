@@ -23,6 +23,15 @@ class BaseDatos {
         $this->QUERY="";
         $this->ERROR="";
     }
+
+    public function getConexion(){
+        return $this->CONEXION;
+    }
+
+    public function getResult(){
+        return $this->RESULT;
+    }
+
     /**
      * Funcion que retorna una cadena
      * con una peque�a descripcion del error si lo hubiera
@@ -53,7 +62,7 @@ class BaseDatos {
                 $this->ERROR = mysqli_errno($conexion) . ": " .mysqli_error($conexion);
             }
         }else{
-            $this->ERROR =  mysqli_errno($conexion) . ": " .mysqli_error($conexion);
+            $this->ERROR =  mysqli_connect_errno($conexion) . ": " .mysqli_connect_error($conexion);
         }
         return $resp;
     }
@@ -69,7 +78,7 @@ class BaseDatos {
         $resp  = false;
         unset($this->ERROR);
         $this->QUERY = $consulta;
-        if(  $this->RESULT = mysqli_query( $this->CONEXION,$consulta)){
+        if(  $this->RESULT = mysqli_query($this->CONEXION,$consulta)){
             $resp = true;
         } else {
             $this->ERROR =mysqli_errno( $this->CONEXION).": ". mysqli_error( $this->CONEXION);
@@ -85,12 +94,14 @@ class BaseDatos {
      */
     public function Registro() {
         $resp = null;
-        if ($this->RESULT){
+        // if ($this->RESULT){
+        if ($this->getResult()){
+            $result = $this->getResult();
             unset($this->ERROR);
-            if($temp = mysqli_fetch_assoc($this->RESULT)){
+            if($temp = mysqli_fetch_assoc($result)){
                 $resp = $temp;
             }else{
-                mysqli_free_result($this->RESULT);
+                mysqli_free_result($result);
             }
         }else{
             $this->ERROR = mysqli_errno($this->CONEXION) . ": " . mysqli_error($this->CONEXION);
@@ -110,11 +121,10 @@ class BaseDatos {
         unset($this->ERROR);
         $this->QUERY = $consulta;
         if ($this->RESULT = mysqli_query($this->CONEXION,$consulta)){
-            $id = mysqli_insert_id();
+            $id = mysqli_insert_id($this->CONEXION);
             $resp =  $id;
         } else {
             $this->ERROR =mysqli_errno( $this->CONEXION) . ": " . mysqli_error( $this->CONEXION);
-           
         }
     return $resp;
     }
