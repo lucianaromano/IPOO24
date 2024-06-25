@@ -2,14 +2,14 @@
 /* IMPORTANTE !!!!  Clase para (PHP 5, PHP 7)*/
 
 class BaseDatos {
-    private $HOSTNAME;
-    private $BASEDATOS;
-    private $USUARIO;
-    private $CLAVE;
-    private $CONEXION;
-    private $QUERY;
-    private $RESULT;
-    private $ERROR;
+    private $HOSTNAME; // La dirección del servidor de la base de datos. Aca; 127.0.0.1 (localhost).
+    private $BASEDATOS; // El nombre de la base de datos que se va a utilizar. bdviajes
+    private $USUARIO; //  El nombre de usuario para conectarse a la base de datos, que es root.
+    private $CLAVE; //La contraseña para el usuario de la base de datos. Aquí está vacía ("")
+    private $CONEXION; //Almacena la conexión a la base de datos.
+    private $QUERY; // Almacena la consulta SQL que se ejecutará.
+    private $RESULT; //Almacena el resultado de una consulta.
+    private $ERROR; //Almacena los mensajes de error si ocurre algún problema.
     /**
      * Constructor de la clase que inicia ls variables instancias de la clase
      * vinculadas a la coneccion con el Servidor de BD
@@ -19,10 +19,19 @@ class BaseDatos {
         $this->BASEDATOS = "bdviajes";
         $this->USUARIO = "root";
         $this->CLAVE="";
-        $this->RESULT=0;
+        $this->RESULT='';
         $this->QUERY="";
         $this->ERROR="";
     }
+
+    public function getConexion(){
+        return $this->CONEXION;
+    }
+
+    public function getResult(){
+        return $this->RESULT;
+    }
+
     /**
      * Funcion que retorna una cadena
      * con una peque�a descripcion del error si lo hubiera
@@ -53,10 +62,11 @@ class BaseDatos {
                 $this->ERROR = mysqli_errno($conexion) . ": " .mysqli_error($conexion);
             }
         }else{
-            $this->ERROR =  mysqli_errno($conexion) . ": " .mysqli_error($conexion);
+            $this->ERROR =  mysqli_connect_errno($conexion) . ": " .mysqli_connect_error($conexion);
         }
         return $resp;
     }
+    
     
     /**
      * Ejecuta una consulta en la Base de Datos.
@@ -69,10 +79,10 @@ class BaseDatos {
         $resp  = false;
         unset($this->ERROR);
         $this->QUERY = $consulta;
-        if(  $this->RESULT = mysqli_query( $this->CONEXION,$consulta)){
+        if(  $this->RESULT = mysqli_query($this->CONEXION,$consulta)){
             $resp = true;
         } else {
-            $this->ERROR =mysqli_errno( $this->CONEXION).": ". mysqli_error( $this->CONEXION);
+            $this->ERROR =mysqli_errno($this->CONEXION).": ". mysqli_error($this->CONEXION);
         }
         return $resp;
     }
@@ -85,19 +95,19 @@ class BaseDatos {
      */
     public function Registro() {
         $resp = null;
-        if ($this->RESULT){
+        // if ($this->RESULT){
+        if ($this->getResult()){
+            $result = $this->getResult();
             unset($this->ERROR);
-            if($temp = mysqli_fetch_assoc($this->RESULT)){
+            if($temp = mysqli_fetch_assoc($result)){
                 $resp = $temp;
             }else{
-                mysqli_free_result($this->RESULT);
+                mysqli_free_result($result);
             }
         }else{
             $this->ERROR = mysqli_errno($this->CONEXION) . ": " . mysqli_error($this->CONEXION);
         }
-        return $resp ;
     }
-    
     /**
      * Devuelve el id de un campo autoincrement utilizado como clave de una tabla
      * Retorna el id numerico del registro insertado, devuelve null en caso que la ejecucion de la consulta falle
@@ -110,7 +120,7 @@ class BaseDatos {
         unset($this->ERROR);
         $this->QUERY = $consulta;
         if ($this->RESULT = mysqli_query($this->CONEXION,$consulta)){
-            $id = mysqli_insert_id();
+            $id = mysqli_insert_id($this->CONEXION);
             $resp =  $id;
         } else {
             $this->ERROR =mysqli_errno( $this->CONEXION) . ": " . mysqli_error( $this->CONEXION);

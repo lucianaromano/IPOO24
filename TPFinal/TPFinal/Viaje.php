@@ -8,9 +8,9 @@ class Viaje {
     private $vdestino;
     private $vcantMaxPasajeros;
     private $vcolPasajeros;
-    private $rnumeroEmpleado; //obj responsable
+    private $objResponsable; //obj responsable ref al responsable
     private $vimporte;
-    private $idEmpresa; //objeto empresa
+    private $objEmpresa; //objeto empresa 
     private $mensajeOperacion;
 
 
@@ -21,8 +21,9 @@ class Viaje {
         $this-> vdestino='';
         $this-> vcantMaxPasajeros= '';
         $this-> vcolPasajeros=[];
-        $this-> rnumeroEmpleado= '';
+        $this-> objResponsable= '';
         $this-> vimporte = '';
+        $this-> objEmpresa = '';
         $this-> mensajeOperacion = '';
     }
 
@@ -58,12 +59,12 @@ class Viaje {
         $this->vcolPasajeros=$vcolPasajeros;
     }
 
-    public function getRnumeroempleado(){
-        return $this-> rnumeroEmpleado;
+    public function getObjResponsable(){
+        return $this-> objResponsable;
     }
 
-    public function setRnumeroempleado($rnumeroEmpleado){
-        $this->rnumeroEmpleado=$rnumeroEmpleado;
+    public function setObjResponsable($objResponsable){
+        $this->objResponsable=$objResponsable;
     }
 
     public function getMensajeOperacion(){
@@ -81,11 +82,11 @@ class Viaje {
         $this->vimporte = $vimporte;
     }
 
-    public function getIdEmpresa(){
-        return $this->idEmpresa;
+    public function getObjEmpresa(){
+        return $this->objEmpresa;
     }
-    public function setIdEmpresa($idEmpresa){
-        $this->idEmpresa = $idEmpresa;
+    public function setObjEmpresa($objEmpresa){
+        $this->objEmpresa = $objEmpresa;
     }
 
     /**
@@ -111,19 +112,21 @@ class Viaje {
             "\nvDestino: " . $this->getVdestino() .
             "\nCantidad maxima de pasajeros: " . $this->getVcantMaxPasajeros() .
             "\nPasajeros: \n" . $this->funcionesAString() .
-            "\nEmpleado Responsable: \n" . $this->getRnumeroEmpleado() .
+            "\nEmpleado Responsable: \n" . $this->getobjResponsable
+    () .
             "\nImporte: $" . $this->getVimporte() .
-            "\nEmpresa: " . $this->getIdEmpresa()."\n";
+            "\nEmpresa: " . $this->getobjEmpresa()."\n";
     }
 
     //FUNCIONES BD
-    public function cargar($idViaje,$vdestino,$vcantMaxPasajeros,$rnumeroEmpleado,$vimporte,$idEmpresa){
+    public function cargar($idViaje,$vdestino,$vcantMaxPasajeros,$objResponsable,$vimporte,$objEmpresa,$vcolPasajeros){
         $this->setIdViaje($idViaje);
         $this->setVdestino($vdestino);
         $this->setVcantMaxPasajeros($vcantMaxPasajeros);
-        $this->setRnumeroempleado($rnumeroEmpleado);
+        $this->setobjResponsable($objResponsable);
         $this->setVimporte($vimporte);
-        $this->setIdEmpresa($idEmpresa);
+        $this->setobjEmpresa($objEmpresa);
+        $this->setVcolPasajeros($vcolPasajeros);
     }
 
     public function Buscar($id){
@@ -140,10 +143,10 @@ class Viaje {
                     $pasajero->buscar($row2['pdocumento']);
                     $this->setvcolPasajeros($pasajero);
                     $responsable = new Responsable();
-                    $responsable->buscar($row2['rnumeroempleado']);
-                    $this->setRnumeroempleado($responsable);
+                    $responsable->buscar($row2['objResponsable']);
+                    $this->setObjResponsable($responsable);
                     $this->setVimporte($row2['vimporte']);
-                    $this->setIdEmpresa($row2['idempresa']);
+                    $this->setObjEmpresa($row2['objEmpresa']);
                     $rta = true;
                 }
             } else {
@@ -173,16 +176,17 @@ class Viaje {
 				$arrayViaje = array();
 				while($row2 = $base->Registro()){
                     $objEmpresa = new Empresa ();
-                    $objEmpresa ->Buscar ($row2['idempresa']);
+                    $objEmpresa ->Buscar ($row2['objEmpresa']);
                     $objResponsable = new Responsable();
-                    $objResponsable -> Buscar ($row2['rnumeroempleado']);
+                    $objResponsable -> Buscar ($row2['objResponsable']);
                     $idviaje = $row2['idviaje'];
                     $vdestino= $row2['vdestino'];
                     $vcantMaxPasajeros = $row2['vcantMaxPasajeros'];
                     $vimporte = $row2 ['vimporte'];
-
+                    $pasajero = new Pasajero ();
+                    $vcolPasajeros = $pasajero -> listar ('idViaje = idviaje');
                     $viaje = new Viaje ();
-                    $viaje -> cargar ($idviaje,$vdestino,$vcantMaxPasajeros,$objResponsable,$vimporte,$objEmpresa);
+                    $viaje -> cargar ($idviaje,$vdestino,$vcantMaxPasajeros,$objResponsable,$vimporte,$objEmpresa,$vcolPasajeros);
 					array_push($arrayViaje,$viaje);
                 }				
             }else{
@@ -198,8 +202,10 @@ class Viaje {
         $base = new BaseDatos();
         $rta = false;
 
-        $consultaInsertar = "INSERT INTO viaje(vdestino,vcantMaxPasajeros,rnumeroEmpleado,vimporte,idEmpresa)
-                            VALUES (" .$this->getVdestino() ."," .$this->getVcantMaxPasajeros().",". $this->getRnumeroempleado()."," .$this->getVimporte().",".$this->getIdEmpresa()."')";
+        $consultaInsertar = "INSERT INTO viaje(vdestino,vcantMaxPasajeros,objResponsable
+,vimporte,objEmpresa)
+                            VALUES (" .$this->getVdestino() ."," .$this->getVcantMaxPasajeros().",". $this->getobjResponsable
+                    ()."," .$this->getVimporte().",".$this->getobjEmpresa()."')";
         
         if ($base->Iniciar()) {
             if ($id = $base->devuelveIDInsercion($consultaInsertar)) {
@@ -219,7 +225,9 @@ class Viaje {
         $rta = false;
         $base = new BaseDatos();
         $consultaModificar = "UPDATE viaje SET vdestino='" . $this->getVdestino() . "',vcantMaxPasajeros='" . $this->getVcantMaxPasajeros() . "'
-                           ,rnumeroempleado='" . $this->getRnumeroempleado() . "',importe=" . $this->getVimporte() . " WHERE id" . $this->getIdViaje();
+                           ,objResponsable
+                    ='" . $this->getobjResponsable
+                    () . "',importe=" . $this->getVimporte() . " WHERE id" . $this->getIdViaje();
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaModificar)) {
                 $rta = true;
