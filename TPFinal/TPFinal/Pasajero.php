@@ -84,9 +84,9 @@ class Pasajero {
 	 * @param int $dni  
 	 * @return boolean 
 	 */		
-    public function buscar($id){
+    public function buscar($dni){
         $base = new BaseDatos();
-        $consulta = "SELECT * FROM pasajero WHERE pdocumento= " . $id;
+        $consulta = "SELECT * FROM pasajero WHERE pdocumento= " . $dni;
         $rta = false;
         if($base->Iniciar()){
             if($base->Ejecutar($consulta)){

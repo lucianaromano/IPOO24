@@ -622,7 +622,7 @@ function opcionEliminarViaje()
 	do {
 		limpiarConsola();
 		echo "************************* ELIMINAR VIAJE ************************************\n";
-		echo "Viajes";
+		echo "Viajes\n";
 		verTabla('viaje');
 		echo "\nOPCIONES\n1) Eliminar\n2) Volver\n\nIngrese opcion: ";
 		$opc = trim(fgets(STDIN));
@@ -674,8 +674,13 @@ function menuPasajero()
 			case 1:
 				opcionCrearPasajero();
 				break;
+			case 3:
+				opcionEliminarPasajero();
+				break;
 			case 4:
 				opcionListarPasajero();
+				break;
+			case 5:
 				break;
 			default:
 				echo "Valor ingresado incorrecto.\nPresione cualquier tecla para contiuar...";
@@ -852,6 +857,32 @@ function opcionCrearPasajero()
 	// } else {
 	// 	echo $newPasaj->getMensajeOperacion();
 	// }
+}
+
+function opcionEliminarPasajero(){
+	do {
+		limpiarConsola();
+		echo "************************* ELIMINAR PASAJERO ************************************\n";
+		echo "Pasajeros\n";
+		verTabla('pasajero');
+		echo "\nOPCIONES\n1) Eliminar\n2) Volver\n\nIngrese opcion: ";
+		$opc = trim(fgets(STDIN));
+		if ($opc == 1) {
+			$objPasajero = new Pasajero();
+			$dni = readline("Ingrese el DNI del pasajero que desea eliminar:");
+			if ($objPasajero->buscar($dni)) {
+				if ($objPasajero->eliminar()) {
+					echo "Se elimino el viaje";
+					fgets(STDIN);
+				} else {
+					echo "No se encontro el viaje";
+					fgets(STDIN);
+				}
+			} else {
+				echo "\n .. Noe se econtro el viaje con ese ID";
+			}
+		}
+	} while ($opc != 2);
 }
 
 function opcionListarPasajero()
