@@ -536,8 +536,7 @@ function menuViaje()
  * @param int $idViaje
  * @return Array
  */
-function listadoPasajerosEnViaje($idViaje)
-{
+function listadoPasajerosEnViaje($idViaje){
     $pasajero = new Pasajero();
     $condicion = 'idviaje = ' . $idViaje;
     $pasajeros = $pasajero->listar($condicion);
@@ -549,14 +548,22 @@ function listadoPasajerosEnViaje($idViaje)
  * @param int $idViaje
  * @return boolean
  */
-function hayLugar($idViaje)
-{
+function hayLugar($idViaje){
     $viaje = new Viaje();
     $viaje->buscar($idViaje);
-    return sizeof(listadoPasajerosEnViaje($idViaje)) < $viaje->getVcantmaxpasajeros();
+    return sizeof(listadoPasajerosEnViaje($idViaje)) < $viaje->getVcantMaxPasajeros();
 }
 
-
+/**
+ * Funcion que retorna un boolean segun si hay viajes cargados en la bd
+ * @return boolean
+ */
+function existenViajes(){
+    $viaje = new Viaje();
+    $viajes = $viaje->listar();
+    $hayViajesCargados = sizeof($viajes) > 0;
+    return $hayViajesCargados;
+}
 
 function opcionCrearViaje()
 {
@@ -648,7 +655,7 @@ function opcionCrearViaje()
 	}
 
 
-	echo "\nIngrese nel numero de responsable: ";
+	echo "\nIngrese el numero de responsable del viaje: ";
 	$nror = trim(fgets(STDIN));
 	$objRespo->buscar($nror);
 
@@ -707,16 +714,13 @@ function opcionModificarViaje()
                 $valor = false;
                 if ($objEmpresa->buscar($idEmpresa)) {
 		            $valor = true;
-					$objViaje->setobjEmpresa(
-                    $objEmpresa->getidempresa()
-                    );
+					$objViaje->setobjEmpresa($objEmpresa->getidempresa());
  				} else {
                 	echo "No se encontro una Empresa con el ID ingresado\n ¿Desea volver a intentarlo? S/N\n";
                     $respuesta = trim(fgets(STDIN));
                 }
                 } while (
-                    !$valor &&
-                    ($respuesta == 'S' || $respuesta == 's')
+                    !$valor && ($respuesta == 'S' || $respuesta == 's')
 				);
                 if ($valor) {
                     do {
@@ -770,10 +774,51 @@ function opcionModificarViaje()
 
 function opcionEliminarViaje()
 {
+	if (existenViajes()) {
+		echo "Ingrese el ID del viaje a eliminar: ";
+		$idViaje = trim(fgets(STDIN));
+		if ($viaje->buscar($idViaje)) {
+			if (sizeOf(listadoPasajerosEnViaje($idViaje)) > 0) { //Verifico que el viaje tenga pasajeros y doy la opcion
+				echo "El viaje contiene pasajeros, desea eliminarlo igual?(si/no): ";
+				$eleccion = trim(fgets(STDIN));
+				if ($eleccion == 'si') {
+					eliminarPasajerosEnViaje($viaje);
+					eliminarViaje($viaje);
+				} elseif ($eleccion != 'si' && $eleccion != 'no') {
+					echo "Opcion incorrecta.";
+				}
+			} else {   //si no tiene pasajeros, lo elimino.
+				if ($viaje->eliminar()) {
+					echo "Se eliminó el viaje.\n";
+				} else {
+					echo "No se eliminó el viaje.\n";
+					echo $viaje->getMensajeOperacion();
+				};
+			}
+		} else {
+			echo "No se encontro el viaje con el ID solicitado.\n";
+		}
+	} else {
+		echo "Opcion no disponible. Inserte un viaje para continuar.\n"; //ningun viaje en la bd, primero insertar uno
+	}
 }
 
-funcion opcionListarViajes()
+//REVISAR
+function opcionListarViajes()
 {
+	do {
+		limpiarConsola();
+		echo "************************* LISTA EMPRESA ************************************\n";
+		echo "Viajes";
+		$viajes = $viaje->listar();
+        if (sizeof($viajes) > 0) { //me fijo si hay viajes cargados para listar.
+        	verTabla('viaje');
+			echo "\nOPCIONES\n1) Volver\n\nIngrese opcion: ";
+			$opc = trim(fgets(STDIN));
+			} else {
+            echo "No hay viajes cargados.\n";
+        }			
+		} while ($opc != 1);
 }
 
 
