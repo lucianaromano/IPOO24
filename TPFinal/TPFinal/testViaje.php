@@ -43,8 +43,6 @@ function limpiarConsola()
 	echo "\033[2J\033[H";
 }
 
-/**********************************MENU GENERAL*****************************************/
-
 //muestra los datos de una tabla de la base de datos.
 function verTabla($tabla)
 {
@@ -83,8 +81,8 @@ function verTabla($tabla)
 			echo "----------------------------------------------------------------\n";
 		}
 }
+/**********************************MENU GENERAL*****************************************/
 
-//MENU GENERAL
 do {
 	limpiarConsola();
 	echo "\n---------------------------OPCIONES GENERALES----------------------------
