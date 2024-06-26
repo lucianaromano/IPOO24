@@ -1,15 +1,24 @@
 <?php
 /* IMPORTANTE !!!!  Clase para (PHP 5, PHP 7)*/
 
-class BaseDatos {
-    private $HOSTNAME; // La dirección del servidor de la base de datos. Aca; 127.0.0.1 (localhost).
-    private $BASEDATOS; // El nombre de la base de datos que se va a utilizar. bdviajes
+    /*private $HOSTNAME; // La dirección del servidor de la base de datos. 
+    private $BASEDATOS; // El nombre de la base de datos que se va a utilizar. 
     private $USUARIO; //  El nombre de usuario para conectarse a la base de datos, que es root.
     private $CLAVE; //La contraseña para el usuario de la base de datos. Aquí está vacía ("")
     private $CONEXION; //Almacena la conexión a la base de datos.
     private $QUERY; // Almacena la consulta SQL que se ejecutará.
     private $RESULT; //Almacena el resultado de una consulta.
     private $ERROR; //Almacena los mensajes de error si ocurre algún problema.
+*/
+class BaseDatos {
+    private $HOSTNAME;
+    private $BASEDATOS;
+    private $USUARIO;
+    private $CLAVE;
+    private $CONEXION;
+    private $QUERY;
+    private $RESULT;
+    private $ERROR;
     /**
      * Constructor de la clase que inicia ls variables instancias de la clase
      * vinculadas a la coneccion con el Servidor de BD
@@ -19,7 +28,7 @@ class BaseDatos {
         $this->BASEDATOS = "bdviajes";
         $this->USUARIO = "root";
         $this->CLAVE="";
-        $this->RESULT='';
+        $this->RESULT=0;
         $this->QUERY="";
         $this->ERROR="";
     }
@@ -67,7 +76,6 @@ class BaseDatos {
         return $resp;
     }
     
-    
     /**
      * Ejecuta una consulta en la Base de Datos.
      * Recibe la consulta en una cadena enviada por parametro.
@@ -82,7 +90,7 @@ class BaseDatos {
         if(  $this->RESULT = mysqli_query($this->CONEXION,$consulta)){
             $resp = true;
         } else {
-            $this->ERROR =mysqli_errno($this->CONEXION).": ". mysqli_error($this->CONEXION);
+            $this->ERROR =mysqli_errno( $this->CONEXION).": ". mysqli_error( $this->CONEXION);
         }
         return $resp;
     }
@@ -107,7 +115,9 @@ class BaseDatos {
         }else{
             $this->ERROR = mysqli_errno($this->CONEXION) . ": " . mysqli_error($this->CONEXION);
         }
+        return $resp ;
     }
+    
     /**
      * Devuelve el id de un campo autoincrement utilizado como clave de una tabla
      * Retorna el id numerico del registro insertado, devuelve null en caso que la ejecucion de la consulta falle
@@ -124,7 +134,6 @@ class BaseDatos {
             $resp =  $id;
         } else {
             $this->ERROR =mysqli_errno( $this->CONEXION) . ": " . mysqli_error( $this->CONEXION);
-           
         }
     return $resp;
     }
