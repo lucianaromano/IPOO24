@@ -1,0 +1,32 @@
+MENU EMPRESAS:
+-crear
+-modificar
+-eliminar
+-listar
+
+
+MENU VIAJE: 
+crear  cargar coleccion de pasajeros con los que tienen idViaje igual al idViaje creado
+modificar
+-eliminar
+-listar viajes
+-listar pasajeros de un viaje
+
+
+MENU PASAJERO: LISTO
+-crear : Verificar DNI 
+        Solo si esta cargado el viaje
+        verificar cantMaxPasajeros del viaje
+
+-modificar
+-eliminar
+-listar
+
+MENU RESPONSABLE: LISTO
+-crear
+-modificar
+-eliminar    Verificar que no este asociado a un viaje. 
+-listar     siempre y cuando haya responsables cargados.
+
+
+

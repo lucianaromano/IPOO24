@@ -110,7 +110,7 @@ class Pasajero {
     }
 
 
-    /**Lista todas los pasajeros que cumplen con cierta condicio 
+    /**Lista todas los pasajeros que cumplen con cierta condicion
 	 * @param void
      * @return array 
 	 */
