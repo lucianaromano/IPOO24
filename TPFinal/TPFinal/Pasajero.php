@@ -63,10 +63,10 @@ class Pasajero {
 
     //metodo toString de la clase
     public function __toString(){
-        return "Nro Documento: " . $this->getPdocumento() .
-            "\nNombre: " . $this->getPnombre() .
-            "\nApellido: " . $this->getPapellido() .
-            "\nTelefono: " . $this->getPtelefono() .
+        return "\nNro Documento: " . $this->getPdocumento() . "  |  " .
+            "Nombre: " . $this->getPnombre() . "  |  " .
+            "Apellido: " . $this->getPapellido() . "  |  " .
+            "Telefono: " . $this->getPtelefono() . "  |  " .
             "\nViaje: \n" . $this->getIdviaje() . "\n";
     }
 
@@ -129,10 +129,12 @@ class Pasajero {
                     $papellido = $row2['papellido'];
                     $pdocumento = $row2['pdocumento'];
                     $ptelefono = $row2['ptelefono'];
-                    $idviaje = $row2['idviaje'];
+                    $objViaje = new Viaje();
+                    $objViaje->Buscar($row2['idviaje']);
+                    // $idviaje = $row2['idviaje'];
                     
                     $pasajero = new Pasajero();
-                    $pasajero->cargar($pdocumento, $pnombre, $papellido, $ptelefono, $idviaje);
+                    $pasajero->cargar( $pnombre, $papellido, $pdocumento, $ptelefono, $objViaje);
                     array_push ($arregloPasajero,$pasajero);
                 }
             }else{

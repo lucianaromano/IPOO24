@@ -23,7 +23,8 @@ class Viaje
         $this->vdestino = '';
         $this->vcantMaxPasajeros = '';
         $this->vcolPasajeros = [];
-        $this->rnumeroEmpleado = '';
+        $this->rnumeroEmpleado = null;
+        $this->idEmpresa = null;
         $this->vimporte = '';
         $this->mensajeOperacion = '';
     }
@@ -78,6 +79,7 @@ class Viaje
         $this->rnumeroEmpleado = $rnumeroEmpleado;
     }
 
+
     public function getMensajeOperacion()
     {
         return $this->mensajeOperacion;
@@ -97,7 +99,7 @@ class Viaje
         $this->vimporte = $vimporte;
     }
 
-    public function getIdEmpresa()
+    public function getIdEmpresaObj()
     {
         return $this->idEmpresa;
     }
@@ -124,14 +126,21 @@ class Viaje
     //toString
     public function __toString()
     {
-        return "----------------------------------
-            ID: " . $this->getIdViaje() .
-            "\nvDestino: " . $this->getVdestino() .
-            "\nCantidad maxima de pasajeros: " . $this->getVcantMaxPasajeros() .
-            "\nPasajeros: \n" . $this->funcionesAString() .
-            "\nEmpleado Responsable: \n" . $this->getRnumeroEmpleado() .
-            "\nImporte: $" . $this->getVimporte() .
-            "\nEmpresa: " . $this->getIdEmpresa() . "\n";
+        // return "----------------------------------
+        //     ID: " . $this->getIdViaje() .
+        //     "\nvDestino: " . $this->getVdestino() .
+        //     "\nCantidad maxima de pasajeros: " . $this->getVcantMaxPasajeros() .
+        //     "\nPasajeros: \n" . $this->funcionesAString() .
+        //     "\nEmpleado Responsable: \n" . $this->getRnumeroEmpleado() .
+        //     "\nImporte: $" . $this->getVimporte() .
+        //     "\nEmpresa: " . $this->getIdEmpresaObj() . "\n";
+
+        return  "ID viaje: " . $this->getIdViaje() . "\n" .
+            "Empresa: " . $this->getIdEmpresaObj() .
+            "\nDestino: " . $this->getVdestino() . "  |  " .
+            "Cantidad maxima de pasajeros: " . $this->getVcantMaxPasajeros() . "  |  " .
+            "Importe: " . $this->getVimporte() . "\nPasajeros: " . $this->funcionesAString() . 
+            "\nEmpleado Responsable: " . $this->getRnumeroEmpleado() . " \n ";
     }
 
     //FUNCIONES BD
@@ -149,19 +158,22 @@ class Viaje
     {
         $base = new BaseDatos();
         $rta = false;
-        $consulta = "SELECT * FROM Viaje WHERE idViaje=" . $id;
+        $consulta = "SELECT * FROM Viaje WHERE idviaje= " . $id;
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 if ($row2 = $base->Registro()) {
-                    $this->setIdViaje($row2['idViaje']);
-                    $this->setvDestino($row2['vvdestino']);
+                    $this->setIdViaje($row2['idviaje']);
+                    $this->setvDestino($row2['vdestino']);
                     $this->setvcantMaxPasajeros($row2['vcantmaxpasajeros']);
-                    $pasajero = new Pasajero();
-                    $pasajero->buscar($row2['pdocumento']);
-                    $this->setvcolPasajeros($pasajero);
-                    $responsable = new Responsable();
-                    $responsable->buscar($row2['rnumeroempleado']);
-                    $this->setRnumeroempleado($responsable);
+                    // $pasajero = new Pasajero();
+                    // $pasajero->buscar($row2['pdocumento']);
+                    // $this->setvcolPasajeros($pasajero);
+
+                    // $responsable = new Responsable();
+                    // $responsable->buscar($row2['rnumeroempleado']);
+                    // $this->setRnumeroempleado($responsable);
+
+                    $this->setRnumeroempleado($row2['rnumeroempleado']);
                     $this->setVimporte($row2['vimporte']);
                     $this->setIdEmpresa($row2['idempresa']);
                     $rta = true;
@@ -199,7 +211,7 @@ class Viaje
                     $objResponsable->Buscar($row2['rnumeroempleado']);
                     $idviaje = $row2['idviaje'];
                     $vdestino = $row2['vdestino'];
-                    $vcantMaxPasajeros = $row2['vcantMaxPasajeros'];
+                    $vcantMaxPasajeros = $row2['vcantmaxpasajeros'];
                     $vimporte = $row2['vimporte'];
 
                     $viaje = new Viaje();
@@ -219,9 +231,11 @@ class Viaje
     {
         $base = new BaseDatos();
         $rta = false;
+        $responsable = $this->getRnumeroempleado();
+        $empresa = $this->getIdEmpresaObj();
 
-        $consultaInsertar = "INSERT INTO viaje(vdestino, vcantMaxPasajeros, rnumeroEmpleado, vimporte, idEmpresa)
-                            VALUES ('" . $this->getVdestino() . "','" . $this->getVcantMaxPasajeros() . "','" . $this->getRnumeroempleado() . "','" . $this->getVimporte() . "','" . $this->getIdEmpresa() . "')";
+        $consultaInsertar = "INSERT INTO viaje(vdestino, vcantMaxPasajeros, rnumeroEmpleado, vimporte, idempresa)
+                            VALUES ('" . $this->getVdestino() . "','" . $this->getVcantMaxPasajeros() . "','" . $responsable->getRnumeroempleado() . "','" . $this->getVimporte() . "','" . $empresa->getIdEmpresa() . "')";
 
         if ($base->Iniciar()) {
             if ($id = $base->devuelveIDInsercion($consultaInsertar)) {
@@ -238,12 +252,54 @@ class Viaje
 
     public function modificar()
     {
+        // Obtén los valores necesarios
+        $objEmpresa = $this->getIdEmpresaObj();
+        // echo "ACA ESTOY";
+        // echo $objEmpresa;
+        // $idEmpresa = $objEmpresa->getIdEmpresa();
+
+        // echo $idEmpresa;
+        $objResponsable = $this->getRnumeroempleado();
+        // $numResponsable = $objResponsable->getNumEmpleado();
+
+        $rnumeroempleado = $this->getRnumeroempleado();
+        $idViaje = $this->getIdViaje();
+        $vdestino = $this->getVdestino();
+        $vcantMaxPasajeros = $this->getVcantMaxPasajeros();
+        $vimporte = $this->getVimporte();
+
+        // echo "ACA ESTOY";
+        // echo $idViaje;
+
+        // // Asegúrate de que $rnumeroempleado sea un objeto de la clase Responsable
+        // if ($rnumeroempleado instanceof Responsable) {
+        //     $num = $rnumeroempleado->getRnumeroEmpleado();
+        // } else {
+        //     // Manejar el error si $rnumeroempleado no es un objeto de la clase Responsable
+        //     echo "Error: rnumeroempleado no es un objeto de la clase Responsable\n";
+        //     return false;
+        // }
+
+        // // Imprime el número de empleado para depuración
+        // echo "EMPLEADO: $num\n";
+
+        // Construye la consulta SQL
         $rta = false;
         $base = new BaseDatos();
-        $consultaModificar = "UPDATE viaje SET vdestino='" . $this->getVdestino() . "',vcantMaxPasajeros='" . $this->getVcantMaxPasajeros() . "'
-                           ,rnumeroempleado='" . $this->getRnumeroempleado() . "',importe=" . $this->getVimporte() . " WHERE id" . $this->getIdViaje();
+        $consulta = "UPDATE viaje 
+                     SET vdestino = '$vdestino', 
+                         vcantmaxpasajeros = $vcantMaxPasajeros, 
+                         rnumeroempleado = $objResponsable, 
+                         idempresa = $objEmpresa,
+                         vimporte = $vimporte 
+                     WHERE idviaje = $idViaje";
+
+        // Imprime la consulta SQL para depuración
+        echo "Consulta SQL: $consulta\n";
+
+        // Ejecuta la consulta SQL
         if ($base->Iniciar()) {
-            if ($base->Ejecutar($consultaModificar)) {
+            if ($base->Ejecutar($consulta)) {
                 $rta = true;
             } else {
                 $this->setMensajeoperacion($base->getError());
