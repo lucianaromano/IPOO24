@@ -1,30 +1,28 @@
 <?php
 
+include_once 'Persona.php';
 include_once 'BaseDatos.php';
 /**registra el número de empleado, número de licencia, nombre y apellido. */
-class Responsable
+class Responsable extends Persona
 {
     private $rnumeroEmpleado;
     private $rnumerolicencia;
-    private $rnombre;
-    private $rapellido;
     private $mensajeoperacion;
 
     public function __construct()
     {
-        $this->rnumeroEmpleado = '';
-        $this->rnumerolicencia = '';
-        $this->rnombre = '';
-        $this->rapellido = '';
-        $this->mensajeoperacion = '';
+        parent::__construct(); //llama al constructor de la clase padre
+        $this->rnumeroEmpleado = "";
+        $this->rnumerolicencia = "";
     }
 
-    public function cargar($rnumeroEmpleado, $rnumerolicencia, $rnombre, $rapellido)
+    public function cargar($datosPersona)
     {
-        $this->rnumeroEmpleado = $rnumeroEmpleado;
-        $this->rnumerolicencia = $rnumerolicencia;
-        $this->rnombre = $rnombre;
-        $this->rapellido = $rapellido;
+        //cargar($idpersona, $ndoc, $nom, $ape, $tel)
+        parent::cargar($datosPersona);
+        //$this->setRnumeroEmpleado($rnumeroEmpleado);
+        $this->setRnumeroEmpleado($datosPersona['rnumeroempleado']);
+        $this->setRnumerolicencia($datosPersona['rnumerolicencia']);
     }
 
     public function getRnumeroEmpleado()
@@ -47,26 +45,6 @@ class Responsable
         $this->rnumerolicencia = $rnumerolicencia;
     }
 
-    public function getRnombre()
-    {
-        return $this->rnombre;
-    }
-
-    public function setRnombre($rnombre)
-    {
-        $this->rnombre = $rnombre;
-    }
-
-    public function getRapellido()
-    {
-        return $this->rapellido;
-    }
-
-    public function setRapellido($rapellido)
-    {
-        $this->rapellido = $rapellido;
-    }
-
     public function getMensajeoperacion()
     {
         return $this->mensajeoperacion;
@@ -79,13 +57,18 @@ class Responsable
 
     public function __toString()
     {
-        return  "\nN° Empleado: " . $this->getRnumeroEmpleado() . "  |  " .
-            "N° Licencia: " . $this->getRnumerolicencia() . "  |  " .
-            "Nombre: " . $this->getRnombre() . "  |  " .
-            "Apellido: " . $this->getRapellido() . "\n";
+        return  parent:: __toString() .
+            "N° Empleado: " . $this->getRnumeroEmpleado() . "  |  " .
+            "N° Licencia: " . $this->getRnumerolicencia() . "  |  " ;
     }
 
     //funciones 
+    
+    /**
+     * Recupera los datos de un responsable por id
+     * @param int $id_funcion
+     * @return boolean $resp
+     */
     public function buscar($id)
     {
         $base = new BaseDatos();
@@ -94,10 +77,9 @@ class Responsable
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 if ($row2 = $base->Registro()) {
+                    parent::buscar($id);
                     $this->setRnumeroEmpleado($row2['rnumeroempleado']);
                     $this->setRnumerolicencia($row2['rnumerolicencia']);
-                    $this->setRnombre($row2['rnombre']);
-                    $this->setRapellido($row2['rapellido']);
                     $rta = true;
                 }
             } else {
@@ -109,6 +91,11 @@ class Responsable
         return $rta;
     }
 
+    /**
+     * Lista todos los responsables que cumplen con una condicion dada
+     * @param String $condicion
+     * @return Array $arregloResponsable
+     */
     public function listar($condicion = '')
     {
         $arregloResponsable = null;
@@ -117,17 +104,14 @@ class Responsable
         if ($condicion != '') {
             $consulta = $consulta . ' WHERE ' . $condicion;
         }
+        $consulta .= " order by rnumeroempleado ";
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 $arregloResponsable = array();
                 while ($row2 = $base->Registro()) {
-                    $rnumeroEmpleado = $row2['rnumeroempleado'];
-                    $rnumerolicencia = $row2['rnumerolicencia'];
-                    $rnombre = $row2['rnombre'];
-                    $rapellido = $row2['rapellido'];
                     $responsable = new Responsable();
-                    $responsable->cargar($rnumeroEmpleado, $rnumerolicencia, $rnombre, $rapellido);
-                    array_push($arregloResponsable, $responsable);
+                    $responsable -> Buscar ($row2['idpersona']);
+                    array_push($arregloResponsable,$responsable);
                 }
             } else {
                 $this->setMensajeoperacion($base->getError());
@@ -138,62 +122,76 @@ class Responsable
         return $arregloResponsable;
     }
 
+    /**
+     * Inserta una instancia en la tabla responsable
+     * @return boolean $resp
+     */
     public function insertar()
     {
         $base = new BaseDatos();
-        $rta = false;
-        $consulta = "INSERT INTO responsable( rnumerolicencia, rnombre, rapellido ) 
-                VALUES ('" . $this->getRnumeroLicencia() . "','" . $this->getRnombre() . "','" . $this->getRapellido() . "')";
-        if ($base->Iniciar()) {
-            // if($base->Ejecutar($consulta)){
-            //     $rta = true;
-            // }
+        $resp = false;
 
-            if ($id = $base->devuelveIDInsercion($consulta)) {
-                $this->setRnumeroEmpleado($id);
-                $rta = true;
+        if (parent::insertar()) {
+            $consultaInsertar = "INSERT INTO responsable(idpersona, rnumeroempleado, rnumerolicencia)
+                                VALUES (" . parent::getIdpersona() . ", '" . $this->getRnumeroEmpleado() . "', " . $this->getRnumerolicencia() . ")";
+        if ($base->Iniciar()) {
+            if ($base->Ejecutar($consultaInsertar)) {
+                $resp = true;
             } else {
                 $this->setMensajeoperacion($base->getError());
             }
         } else {
             $this->setMensajeoperacion($base->getError());
         }
-        return $rta;
+        }
+        return $resp;    
     }
 
+    /**
+     * Modifica una instancia en la tabla responsable
+     * @param
+     * @return boolean $resp
+     */
     public function modificar()
     {
-        $rta = false;
+        $resp = false;
         $base = new BaseDatos();
-
-        $consulta = "UPDATE responsable SET rnumerolicencia = {$this->getRnumeroLicencia()}, rnombre = '{$this->getRnombre()}', rapellido = '{$this->getRapellido()}' 
-                    WHERE rnumeroempleado = {$this->getRnumeroEmpleado()}";
-        if ($base->Iniciar()) {
-            if ($base->Ejecutar($consulta)) {
-                $rta = true;
+        if (parent::modificar()) {
+            $consultaModifica = "UPDATE responsable SET rnumeroempleado = '" . $this->getRnumeroEmpleado() . "', rnumerolicencia = " . $this->getRnumerolicencia() . "WHERE idpersona = " . parent::getIdpersona();
+            if ($base->Iniciar()) {
+                if ($base->Ejecutar($consultaModifica)) {
+                    $resp = true;
+                } else {
+                    $this->setMensajeoperacion($base->getError());
+                }
             } else {
                 $this->setMensajeoperacion($base->getError());
             }
-        } else {
-            $this->setMensajeoperacion($base->getError());
         }
-        return $rta;
+        return $resp;
     }
 
+    /**
+     * Elimina una instancia de la tabla musical
+     * @param
+     * @return boolean $resp
+     */
     public function eliminar()
     {
         $base = new BaseDatos();
-        $rta = false;
-        $consulta = "DELETE FROM responsable WHERE rnumeroempleado = " . $this->getRnumeroEmpleado();
+        $resp = false;
         if ($base->Iniciar()) {
-            if ($base->Ejecutar($consulta)) {
-                $rta = true;
+            $consultaBorra = "DELETE FROM responsable WHERE idpersona=" . parent::getIdPersona();
+            if ($base->Ejecutar($consultaBorra)) {
+                if (parent::eliminar()) {
+                    $resp = true;
+                }
             } else {
                 $this->setMensajeoperacion($base->getError());
             }
         } else {
             $this->setMensajeoperacion($base->getError());
         }
-        return $rta;
+        return $resp;
     }
 }

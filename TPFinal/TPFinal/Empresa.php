@@ -124,21 +124,6 @@ include_once 'BaseDatos.php';
 
         public function insertar()
         {
-            // $base = new BaseDatos();
-            // $rta = false;
-            // $consultaInsertar = "INSERT INTO empresa(idempresa, enombre, edireccion) 
-            // VALUES('" . $this->getIdempresa() . "','" . $this->getEnombre() . "','" . $this->getEdireccion() . "')";
-
-            // if ($base->Iniciar()) {
-            //     if ($base->Ejecutar($consultaInsertar)) {
-            //         $rta = true;
-            //     } else {
-            //         $this->setMensajeoperacion($base->getError());
-            //     }
-            // } else {
-            //     $this->setMensajeoperacion($base->getError());
-            // }
-            // return $rta;
             $resp = false;
             $base = new BaseDatos();
             $consultaInsertar = "INSERT INTO empresa(enombre, edireccion) 
@@ -153,9 +138,9 @@ include_once 'BaseDatos.php';
             } else {
                 $this->setMensajeOperacion($base->getError());
             }
-
             return $resp;
         }
+        
 
         public function modificar()
         {

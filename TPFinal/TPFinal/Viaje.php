@@ -124,21 +124,21 @@ class Viaje
     //toString
     public function __toString()
     {
-        return "----------------------------------
-            ID: " . $this->getIdViaje() .
-            "\nvDestino: " . $this->getVdestino() .
+        return "-----------------------------------------------------------------------\nID: " . $this->getIdViaje() .
+            "\nDestino: " . $this->getVdestino() .
+            "\nImporte: $" . $this->getVimporte() .
             "\nCantidad maxima de pasajeros: " . $this->getVcantMaxPasajeros() .
             "\nPasajeros: \n" . $this->funcionesAString() .
             "\nEmpleado Responsable: \n" . $this->getRnumeroEmpleado() .
-            "\nImporte: $" . $this->getVimporte() .
             "\nEmpresa: " . $this->getIdEmpresa() . "\n";
     }
 
     //FUNCIONES BD
-    public function cargar($idViaje, $vdestino, $vcantMaxPasajeros, $rnumeroEmpleado, $vimporte, $idEmpresa)
+    public function cargar($idViaje, $vdestino, $vcantMaxPasajeros, $rnumeroEmpleado,$vcolPasajeros, $vimporte, $idEmpresa)
     {
         $this->setIdViaje($idViaje);
         $this->setVdestino($vdestino);
+        $this->setVcolPasajeros($vcolPasajeros);
         $this->setVcantMaxPasajeros($vcantMaxPasajeros);
         $this->setRnumeroempleado($rnumeroEmpleado);
         $this->setVimporte($vimporte);
@@ -153,12 +153,12 @@ class Viaje
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 if ($row2 = $base->Registro()) {
-                    $this->setIdViaje($row2['idViaje']);
-                    $this->setvDestino($row2['vvdestino']);
+                    $this->setIdViaje($row2['idviaje']);
+                    $this->setvDestino($row2['vdestino']);
                     $this->setvcantMaxPasajeros($row2['vcantmaxpasajeros']);
                     $pasajero = new Pasajero();
-                    $pasajero->buscar($row2['pdocumento']);
-                    $this->setvcolPasajeros($pasajero);
+                    // $pasajero->buscar($row2['pdocumento']);
+                    // $this->setvcolPasajeros($pasajero);
                     $responsable = new Responsable();
                     $responsable->buscar($row2['rnumeroempleado']);
                     $this->setRnumeroempleado($responsable);
@@ -199,11 +199,14 @@ class Viaje
                     $objResponsable->Buscar($row2['rnumeroempleado']);
                     $idviaje = $row2['idviaje'];
                     $vdestino = $row2['vdestino'];
-                    $vcantMaxPasajeros = $row2['vcantMaxPasajeros'];
+                    $vcantMaxPasajeros = $row2['vcantmaxpasajeros'];
                     $vimporte = $row2['vimporte'];
-
+                    
+                    
                     $viaje = new Viaje();
-                    $viaje->cargar($idviaje, $vdestino, $vcantMaxPasajeros, $objResponsable, $vimporte, $objEmpresa);
+                    $pasajero = new Pasajero();
+                    $coleccionPasajero = $pasajero->listar('idviaje =' . $idviaje);
+                    $viaje->cargar($idviaje, $vdestino, $vcantMaxPasajeros, $objResponsable,$coleccionPasajero, $vimporte, $objEmpresa);
                     array_push($arrayViaje, $viaje);
                 }
             } else {
@@ -239,8 +242,10 @@ class Viaje
     {
         $rta = false;
         $base = new BaseDatos();
-        $consultaModificar = "UPDATE viaje SET vdestino='" . $this->getVdestino() . "',vcantMaxPasajeros='" . $this->getVcantMaxPasajeros() . "'
-                           ,rnumeroempleado='" . $this->getRnumeroempleado() . "',importe=" . $this->getVimporte() . " WHERE id" . $this->getIdViaje();
+        $objResponsabe = $this->getRnumeroempleado();
+        $idResponsable = $objResponsabe->getRnumeroempleado();
+        $consultaModificar = "UPDATE viaje SET vdestino='" . $this->getVdestino() . "',vcantmaxpasajeros='" . $this->getVcantMaxPasajeros() . "'
+                           ,rnumeroempleado='" . $idResponsable . "',vimporte=" . $this->getVimporte() . " WHERE idviaje =" . $this->getIdViaje();
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaModificar)) {
                 $rta = true;
