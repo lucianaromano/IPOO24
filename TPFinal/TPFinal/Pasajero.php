@@ -1,6 +1,7 @@
  <?php
 //De los pasajeros se conoce su nombre, apellido, número de documento y teléfono.
 include_once 'BaseDatos.php';
+include_once 'Persona.php';
 
 class Pasajero extends Persona {
     //ATRIBUTOS
@@ -9,18 +10,19 @@ class Pasajero extends Persona {
     private $mensajeoperacion;
     
     //CONSTRUCTOR
-    public function __construct()
-    {
+    public function __construct(){
         parent:: __construct();
         $this->idpasajero = "";
         $this->idViaje = "";
     }
 
-    public function cargar($datosPersona)
-    {
+    public function cargar($datosPersona){
         parent::cargar($datosPersona);
         $this->setIdPasajero($datosPersona['idpasajero']);
         $this->setIdViaje($datosPersona['idviaje']);
+        //parent::cargar($idpersona, $ndoc, $nom, $ape, $tel);
+        //$this->setIdPasajero($idpasajero);
+        //$this->setIdViaje($idviaje);
     }
     //METODOS DE ACCESO
     public function getIdPasajero(){

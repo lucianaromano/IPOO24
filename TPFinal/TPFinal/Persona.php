@@ -20,8 +20,7 @@ class Persona
         $this->ptelefono = "";
     }
 
-    /*public function cargar($idpersona, $ndoc, $nom, $ape, $tel)
-    {
+    /*public function cargar($idpersona, $ndoc, $nom, $ape, $tel){
         $this->setIdpersona($idpersona);
         $this->setPnrodoc($ndoc);
         $this->setPnombre($nom);
@@ -29,8 +28,7 @@ class Persona
         $this->setPtelefono($tel);
     }
     */
-    public function cargar($datosPersona)
-    {
+    public function cargar($datosPersona){
         $this->setIdPersona($datosPersona['idpersona']);
         $this->setPnrodoc($datosPersona['pnrodoc']);
         $this->setPnombre($datosPersona['pnombre']);
@@ -144,9 +142,15 @@ class Persona
             if ($base->Ejecutar($consultaPersonas)) {
                 $arregloPersona = array();
                 while ($row2 = $base->Registro()) {
+                    $id = $row2['idpersona'];
+                    $nrodoc = $row2['pnrodoc'];
+                    $nombre = $row2['pnombre'];
+                    $apellido = $row2['papellido'];
+                    $tel = $row2['ptelefono'];
+
                     $persona = new Persona();
-                    $persona->buscar($row2['idpersona']);
-                    array_push($arregloPersona,$persona);
+                    $persona->cargar($id, $nrodoc, $nombre, $apellido, $tel);
+                    array_push($arregloPersona, $persona);
                 }
             } else {
                 $this->setMensajeoperacion($base->getError());

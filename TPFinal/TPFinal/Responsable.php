@@ -15,12 +15,20 @@ class Responsable extends Persona
         $this->rnumeroEmpleado = "";
         $this->rnumerolicencia = "";
     }
+    /*
+    public function cargar ($idpersona,$ndoc,$nom,$ape,$tel,$rnumeroEmpleado=null,$rnumerolicencia=null){
+        parent::cargar($idpersona,$ndoc,$nom,$ape,$tel);
+        if($rnumeroEmpleado != null){
+            $this->setRnumeroempleado($rnumeroEmpleado);
+        }
+        if($rnumerolicencia != null){
+            $this->setRnumerolicencia($rnumerolicencia);
+        }
+    }*/
 
-    public function cargar($datosPersona)
-    {
-        //cargar($idpersona, $ndoc, $nom, $ape, $tel)
+    //con un arreglo asociativo
+    public function cargar($datosPersona){
         parent::cargar($datosPersona);
-        //$this->setRnumeroEmpleado($rnumeroEmpleado);
         $this->setRnumeroEmpleado($datosPersona['rnumeroempleado']);
         $this->setRnumerolicencia($datosPersona['rnumerolicencia']);
     }
