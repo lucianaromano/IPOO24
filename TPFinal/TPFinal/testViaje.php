@@ -822,7 +822,7 @@ function opcionCrearPasajero()
 		//$pasajero->cargar($idpersona,$nombre, $apellido, $pdocumento, $telefono,$idpasajero, $viaje);
 		$pasajero->cargar ([
 			'idpersona'=> $idpersona,
-			'pdoc'=>$pdocumento,
+			'pnrodoc'=>$pdocumento,
 			'pnombre'=> $nombre,
 			'papellido'=>$apellido,
 			'ptelefono'=>$telefono,
@@ -1034,7 +1034,7 @@ function opcionCrearResponsable()
 		//cargo el arreglo asociativo
 		$objResponsable->cargar ([
 			'idpersona'=> $idpersona,
-			'pdoc'=>$doc,
+			'pnrodoc'=>$doc,
 			'pnombre'=> $nombre,
 			'papellido'=>$apellido,
 			'ptelefono'=>$telefono,
@@ -1066,33 +1066,18 @@ function opcionModificarResponsable()
 		$opc = trim(fgets(STDIN));
 		if ($opc == 1) {
 			$objResponsable = new Responsable();
-			$dni = readline("Ingrese DNI del responsable que desea modificar: ");
-			if ($objResponsable->buscar($dni)) {
+			$id = readline("\nIngrese ID del empleado del responsable que desea modificar: ");
+			if ($objResponsable->buscar($id)) {
 				do {
 					limpiarConsola();
 					echo "Responsable $objResponsable \n
-					OPCIONES\n
-					1) Nuevo n° de empleado\n
-					2) Nuevo n° licencia\n
-					3) Nuevo nombre\n
-					4) Nuevo apellido\n
-					5) Nuevo telefono\n ".
+					OPCIONES\n1) Nuevo n° licencia\n2) Nuevo nombre\n3) Nuevo apellido\n4) Nuevo telefono\n ".
 						setColor("6) Volver", "red") .
 						"\n\nIngrese opcion: ";
 					$opc = trim(fgets(STDIN));
 					switch ($opc) {
-						case 1: //modificar numero de empleado
-							$empleado = readline("Ingrese nuevo N° empleado: ");
-							$objResponsable->setRnumeroempleado($empleado);
-							if ($objResponsable->modificar()) {
-								echo setColor("\nN° Empleado actualizado.", "green")."\n\n".setColor("Presione cualquier tecla pra continuar...", "yellow");
-								fgets(STDIN);
-							} else {
-								echo setColor("No se pudo actilzar el N° Empleado.", "red")."\n".setColor("Presione cualquier tecla para contiuar...", "yellow");
-								fgets(STDIN);
-							};
-							break;
-						case 2: //modificar numero de licencia
+						case 1: //modificar numero de licencia
+							echo $objResponsable->getIdpersona();
 							$licencia = readline("Ingrese nuevo N° Licencia: ");
 							$objResponsable->setRnumerolicencia($licencia);
 							if ($objResponsable->modificar()) {
@@ -1103,7 +1088,7 @@ function opcionModificarResponsable()
 								fgets(STDIN);
 							};
 							break;
-						case 3: //modificar nombre
+						case 2: //modificar nombre
 							$nombre = readline("Ingrese el nuevo nombre: ");
                             $objResponsable->setPnombre($nombre);
                             if ($objResponsable->modificar()){
@@ -1114,7 +1099,7 @@ function opcionModificarResponsable()
 								fgets(STDIN);
 							}
 							break;
-						case 4: //modificar apellido
+						case 3: //modificar apellido
 							$apellido = readline("ingrese el nuevo apellido: ");
                             $objResponsable->setPapellido($apellido);
                             if ($objResponsable->modificar()){
@@ -1125,7 +1110,7 @@ function opcionModificarResponsable()
 								fgets(STDIN);
 							}
 							break;
-						case 5: //modificar telefono
+						case 4: //modificar telefono
 							$telefono = readline("Ingrese el nuevo teléfono: ");
 							$objResponsable->setPtelefono($telefono);
 							if ($objResponsable->modificar()){
@@ -1136,14 +1121,14 @@ function opcionModificarResponsable()
 								fgets(STDIN);
 							}
 							break;
-						case 6: //salir
+						case 5: //salir
 							break;
 						default:
 							echo setColor("Valor ingresado incorrecto.", "red") . "\n" . setColor("Presione cualquier tecla para contiuar...", "yellow");
 							fgets(STDIN);
 							break;
 					}
-				} while ($opc != 6);
+				} while ($opc != 5);
 			} else {
 				echo setColor("Error. No hay un responsable cargado con ese número de documento.", "red");
                 fgets(STDIN);

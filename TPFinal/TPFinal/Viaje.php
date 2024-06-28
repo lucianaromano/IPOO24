@@ -242,8 +242,8 @@ class Viaje
     {
         $rta = false;
         $base = new BaseDatos();
-        $objResponsabe = $this->getRnumeroempleado();
-        $idResponsable = $objResponsabe->getRnumeroempleado();
+        $objResponsable = $this->getRnumeroempleado();
+        $idResponsable = $objResponsable->getRnumeroempleado();
         $consultaModificar = "UPDATE viaje SET vdestino='" . $this->getVdestino() . "',vcantmaxpasajeros='" . $this->getVcantMaxPasajeros() . "'
                            ,rnumeroempleado='" . $idResponsable . "',vimporte=" . $this->getVimporte() . " WHERE idviaje =" . $this->getIdViaje();
         if ($base->Iniciar()) {

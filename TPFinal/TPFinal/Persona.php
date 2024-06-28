@@ -108,6 +108,7 @@ class Persona
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
                 if ($row2 = $base->Registro()) {
+                    $this->setIdpersona($row2['idpersona']);
                     $this->setPnrodoc($row2['pnrodoc']);
                     $this->setPnombre($row2['pnombre']);
                     $this->setPapellido($row2['papellido']);
@@ -120,6 +121,7 @@ class Persona
         } else {
             $this->setMensajeoperacion($base->getError());
         }
+        
         return $rta;
     }
 
@@ -170,8 +172,10 @@ class Persona
     {
         $base = new BaseDatos();
         $resp = false;
-        $consultaInsertar = "INSERT INTO persona(pnrodoc, pnombre, papellido, ptelefono)
-				VALUES (" . $this->getPnrodoc() . ",'" . $this->getPnombre() . "','" . $this->getPapellido() . "','" . $this->getPtelefono() . "')";
+        $consultaInsertar = "INSERT INTO persona( pnombre)
+				VALUES ('" . $this->getPnombre() . "')";
+        // $consultaInsertar = "INSERT INTO persona(pnrodoc, pnombre, papellido, ptelefono)
+		// 		VALUES (" . $this->getPnrodoc() . ",'" . $this->getPnombre() . "','" . $this->getPapellido() . "','" . $this->getPtelefono() . "')";
 
         if ($base->Iniciar()) {
 
@@ -192,7 +196,7 @@ class Persona
         $resp = false;
         $base = new BaseDatos();
         $consultaModifica = "UPDATE persona SET papellido='" . $this->getPapellido() . "',pnombre='" . $this->getPnombre() . "'
-                           ,ptelefono='" . $this->getPtelefono() . "',pnrodoc=" . $this->getPnrodoc() . " WHERE id" . $this->getIdPersona();
+                           ,ptelefono='" . $this->getPtelefono() . "',pnrodoc=" . $this->getPnrodoc() . " WHERE idpersona = " . $this->getIdPersona();
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaModifica)) {
                 $resp = true;
@@ -226,9 +230,9 @@ class Persona
 
     public function __toString()
     {
-        return  "\nNombre: " . $this->getPnombre() . " | ".
-                "Apellido:" . $this->getPapellido() . " | ".
-                "DNI: " . $this->getPnrodoc() . " | ".
+        return  "\nID: "  . $this->getIdpersona() .  "  |  " . "Nombre: " . $this->getPnombre() . "  |  ".
+                "Apellido:" . $this->getPapellido() . "  |  ".
+                "DNI: " . $this->getPnrodoc() . "  |  ".
                 "Telefono: " . $this->getPtelefono();
 
     }

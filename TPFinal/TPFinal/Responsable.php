@@ -27,7 +27,8 @@ class Responsable extends Persona
     }*/
 
     //con un arreglo asociativo
-    public function cargar($datosPersona){
+    public function cargar($datosPersona)
+    {
         parent::cargar($datosPersona);
         $this->setRnumeroEmpleado($datosPersona['rnumeroempleado']);
         $this->setRnumerolicencia($datosPersona['rnumerolicencia']);
@@ -65,13 +66,13 @@ class Responsable extends Persona
 
     public function __toString()
     {
-        return  parent:: __toString() .
-            "N° Empleado: " . $this->getRnumeroEmpleado() . "  |  " .
-            "N° Licencia: " . $this->getRnumerolicencia() . "  |  " ;
+        return  parent::__toString() .
+            "  |  N° Empleado: " . $this->getRnumeroEmpleado() . "  |  " .
+            "N° Licencia: " . $this->getRnumerolicencia() . "  |  \n";
     }
 
     //funciones 
-    
+
     /**
      * Recupera los datos de un responsable por id
      * @param int $id_funcion
@@ -80,7 +81,7 @@ class Responsable extends Persona
     public function buscar($id)
     {
         $base = new BaseDatos();
-        $consulta = "SELECT * FROM responsable WHERE rnumeroempleado= " . $id;
+        $consulta = "SELECT * FROM responsable WHERE idpersona= " . $id;
         $rta = false;
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consulta)) {
@@ -96,6 +97,7 @@ class Responsable extends Persona
         } else {
             $this->setMensajeoperacion($base->getError());
         }
+
         return $rta;
     }
 
@@ -118,8 +120,8 @@ class Responsable extends Persona
                 $arregloResponsable = array();
                 while ($row2 = $base->Registro()) {
                     $responsable = new Responsable();
-                    $responsable -> Buscar ($row2['idpersona']);
-                    array_push($arregloResponsable,$responsable);
+                    $responsable->Buscar($row2['idpersona']);
+                    array_push($arregloResponsable, $responsable);
                 }
             } else {
                 $this->setMensajeoperacion($base->getError());
@@ -142,17 +144,17 @@ class Responsable extends Persona
         if (parent::insertar()) {
             $consultaInsertar = "INSERT INTO responsable(idpersona, rnumeroempleado, rnumerolicencia)
                                 VALUES (" . parent::getIdpersona() . ", '" . $this->getRnumeroEmpleado() . "', " . $this->getRnumerolicencia() . ")";
-        if ($base->Iniciar()) {
-            if ($base->Ejecutar($consultaInsertar)) {
-                $resp = true;
+            if ($base->Iniciar()) {
+                if ($base->Ejecutar($consultaInsertar)) {
+                    $resp = true;
+                } else {
+                    $this->setMensajeoperacion($base->getError());
+                }
             } else {
                 $this->setMensajeoperacion($base->getError());
             }
-        } else {
-            $this->setMensajeoperacion($base->getError());
         }
-        }
-        return $resp;    
+        return $resp;
     }
 
     /**
@@ -164,8 +166,12 @@ class Responsable extends Persona
     {
         $resp = false;
         $base = new BaseDatos();
+        // echo "\n\n\n";
+        // echo parent::getIdpersona();
+        // echo "\n\n\n";
+
         if (parent::modificar()) {
-            $consultaModifica = "UPDATE responsable SET rnumeroempleado = '" . $this->getRnumeroEmpleado() . "', rnumerolicencia = " . $this->getRnumerolicencia() . "WHERE idpersona = " . parent::getIdpersona();
+            $consultaModifica = "UPDATE responsable SET rnumeroempleado = ' {$this->getRnumeroEmpleado()} ', rnumerolicencia = '{$this->getRnumerolicencia()}'  WHERE idpersona = " . parent::getIdpersona();
             if ($base->Iniciar()) {
                 if ($base->Ejecutar($consultaModifica)) {
                     $resp = true;

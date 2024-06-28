@@ -62,7 +62,7 @@ class Pasajero extends Persona {
     public function buscar($idpersona)
     {
         $base = new BaseDatos();
-        $consulta = "SELECT * FROM cine WHERE idpersona = " . $idpersona;
+        $consulta = "SELECT * FROM pasajero WHERE idpersona = " . $idpersona;
         $rta = false;
         if($base->Iniciar()){
             if($base->Ejecutar($consulta)){
@@ -119,11 +119,13 @@ class Pasajero extends Persona {
     public function insertar()
     {
         $base = new BaseDatos();
+        $viaje = $this->getIdViaje();
+        $idViaje = $viaje->getIdViaje();
         $resp = false;
 
         if (parent::insertar()) {
-            $consultaInsertar = "INSERT INTO pasajero(idpersona, idpasajero, idviaje)
-				VALUES (" . parent::getIdpersona() . ", '" . $this->getIdPasajero() . "', '" . $this->getIdViaje() . "')";
+            $consultaInsertar = "INSERT INTO pasajero
+				VALUES (" . parent::getIdpersona() . ", '" . $this->getIdPasajero() . "', '" . $idViaje . "')";
             if ($base->Iniciar()) {
                 if ($base->Ejecutar($consultaInsertar)) {
                     $resp = true;
@@ -146,7 +148,7 @@ class Pasajero extends Persona {
         $rta = false;
         $base = new BaseDatos();
         if (parent::modificar()) {
-            $consultaModifica = "UPDATE pasajero SET idpasajero = '" . $this->getIdPasajero() . "', idviaje = '" . $this->getIdViaje() . "' WHERE idpersona = " . parent::getIdpersona();
+            $consultaModifica = "UPDATE pasajero SET idviaje = '" . $this->getIdViaje() . "' WHERE idpersona = " . parent::getIdpersona();
             if ($base->Iniciar()) {
                 if ($base->Ejecutar($consultaModifica)) {
                     $rta = true;
