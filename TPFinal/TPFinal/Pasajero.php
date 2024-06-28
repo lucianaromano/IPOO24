@@ -119,8 +119,7 @@ class Pasajero extends Persona {
     public function insertar()
     {
         $base = new BaseDatos();
-        $viaje = $this->getIdViaje();
-        $idViaje = $viaje->getIdViaje();
+        $idViaje = $this->getIdViaje();
         $resp = false;
 
         if (parent::insertar()) {
